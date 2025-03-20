@@ -77,7 +77,7 @@
     "select_incident_time": "Select Incident Time",
     "select_incident_date": "Select Incident Date",
     "Request Details": "Request Details",
-    "date_request": "Date of the request",
+    "Date of the request": "Date of the request",
     "select_request_date": "Select Request Date",
     "Consent Statement": "Consent Statement",
     " Do you agree to share this information, including your identity, with third parties?": "Do you agree to share this information, including your identity, with third parties?",
@@ -110,6 +110,7 @@
     "Rathnapura": "Rathnapura",
     "Kegalle": "Kegalle",
     "Village": "Village",
+    "Village of the incident":"Village of the incident",
     "Submit": "Submit",
     "invalid_location": "Invalid Location",
     "invalid_description": "Invalid Description",
@@ -137,7 +138,13 @@
     "referendum": "Referendum",
     "unknown": "Unknown",
     "otp_resent": "OTP Resent",
+    "Choose an option":"Choose an option",
     "retry": "Retry",
+    "yes":"yes",
+    "No":"No",
+    "Attach Files(Image)":"Attach Files(Image)",
+    "Select District":"Select District",
+    "Get help on how to use the app":"Get help on how to use the app",
     "connection_lost": "Connection Lost",
     "no_network_description": "Your network is unavailable, Check you mobile data or WiFi connection",
     "back_online": "Back Online",
@@ -150,6 +157,7 @@
     "learn_all": "Learn all about it",
     "gps_location": "GPS Location",
     "incident_location": "Incident Location",
+    "File Selected":"File Selected",
     "add_complaint": {
       "title": "1 .How to Add New Complaint",
       "login": "- Log in to your account",
@@ -158,6 +166,7 @@
       "submit": "- Get photos/videos or you can skip..",
       "submits": "- Fill in the complaint details (e.g., title, description).",
       "submits1": "- Submit the form. You will receive a reference number for tracking."
+
       
     },
     "add_request": {

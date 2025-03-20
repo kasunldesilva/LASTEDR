@@ -5,7 +5,7 @@ import { PieChart } from 'react-native-chart-kit';
 const screenWidth = Dimensions.get('window').width;
 
 const CustomPieChart = ({ data ,totalCount}) => {
-  // Calculate total count dynamically
+
   
 
   return (
@@ -18,10 +18,10 @@ const CustomPieChart = ({ data ,totalCount}) => {
       accessor="population"
       backgroundColor="transparent"
       paddingLeft="90"
-      hasLegend={false} // 🔥 Remove details section (legend)
+      hasLegend={false} 
     />
 
-    {/* White overlay to create donut effect */}
+   
     <View style={styles.centerCircle}>
       <Text style={styles.totalCount}>{totalCount || 0}</Text>
     </View>
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
       centerCircle: {
         position: 'absolute',
         top: 30,
-        left: screenWidth / 2.4,
+        left: screenWidth / 2.44,
         backgroundColor: 'white',
         width: 60,
         height: 60,

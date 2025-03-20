@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { 
-  View, Text, TextInput, TouchableOpacity, Alert, StyleSheet ,ScrollView,Dimensions,Platform
+  View, Text, TextInput, TouchableOpacity,useColorScheme, Alert, StyleSheet ,ScrollView,Dimensions,Platform
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Modal from "react-native-modal";
 
-
+import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 
 
 
@@ -36,6 +36,15 @@ const Request = () => {
   const [token, setToken] = useState(null);
   const [success, setSuccess] = useState(false);
   const [complaintID, setComplaintID] = useState(null);
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: "white",
+      text: "black",
+      placeholder: "gray",
+    },
+  };
   
 const [tempDate, setTempDate] = useState(new Date());
 
@@ -172,122 +181,126 @@ const [tempDate, setTempDate] = useState(new Date());
 
   return (
     <>
-      <Appbar.Header style={styles.appBar}>
-        <Appbar.BackAction onPress={handleBack} /> 
-        <Appbar.Content /> 
-        <Appbar.Action icon="account" onPress={() => {}} />
-        <Appbar.Action icon="dots-vertical" onPress={() => {}} />
-      </Appbar.Header>
+      <PaperProvider theme={theme}>
+        <Appbar.Header style={styles.appBar}>
+          <Appbar.BackAction onPress={handleBack} /> 
+          <Appbar.Content /> 
+          <Appbar.Action icon="account" onPress={() => {}} />
+          <Appbar.Action icon="dots-vertical" onPress={() => {}} />
+        </Appbar.Header>
 
-       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-        <View style={styles.container}>
-          <Text style={styles.title}>{t("Local Authorities Election")}- 2025</Text>
-          <Text style={styles.heading}>{t("Request Details")}</Text>
+          <View style={styles.container}>
+            <Text style={styles.title}>{t("Local Authorities Election")}- 2025</Text>
+            <Text style={styles.heading}>{t("Request Details")}</Text>
 
-          <TextInput
-            placeholder={t("Title")}
-            style={styles.input}
-            onChangeText={(text) => setRequest({ ...request, title: text })}
-          />
-          <TextInput
-            placeholder={t("Description")}
-            style={[styles.input, styles.textArea]}
-            multiline
-            onChangeText={(text) => setRequest({ ...request, description: text })}
-          />
-
-        <TouchableOpacity
-            style={styles.datePickerContainer}
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Ionicons name="calendar-outline" size={20} color="gray" />
-            <Text style={styles.dateText}>
-              {request.incident_date || "Date of the request"}
-            </Text>
-          </TouchableOpacity>
-
-         
-          {showDatePicker && Platform.OS === "android" && (
-            <DateTimePicker
-              value={date}
-              mode="date"
-              display="default"
-              onChange={handleDateChange}
+            <TextInput
+              placeholder={t("Title")}
+              placeholderTextColor="gray" 
+              style={styles.input}
+              onChangeText={(text) => setRequest({ ...request, title: text })}
             />
-          )}
+            <TextInput
+              placeholder={t("Description")}
+              placeholderTextColor="gray" 
+              style={[styles.input, styles.textArea]}
+              multiline
+              onChangeText={(text) => setRequest({ ...request, description: text })}
+            />
 
-        
-          <Modal isVisible={showDatePicker && Platform.OS === "ios"}>
-            <View style={styles.modalContent}>
+          <TouchableOpacity
+              style={styles.datePickerContainer}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Ionicons name="calendar-outline" size={20} color="black" />
+              <Text style={styles.dateText}>
+                {request.incident_date || t("Date of the request")}
+              </Text>
+            </TouchableOpacity>
+
+          
+            {showDatePicker && Platform.OS === "android" && (
               <DateTimePicker
                 value={date}
                 mode="date"
-                display="inline"
+                display="default"
                 onChange={handleDateChange}
               />
-             <TouchableOpacity
-                style={[
-                  styles.datePickerContainer,
-                  request.incident_date && styles.datePickerSelected, 
-                ]}
+            )}
+
+          
+            <Modal isVisible={showDatePicker && Platform.OS === "ios"}>
+              <View style={styles.modalContent}>
+                <DateTimePicker
+                  value={date}
+                  mode="date"
+                  display="inline"
+                  onChange={handleDateChange}
+                />
+              <TouchableOpacity
+                  style={[
+                    styles.datePickerContainer,
+                    request.incident_date && styles.datePickerSelected, 
+                  ]}
+                  onPress={() => {
+                    setTempDate(date);
+                    setShowDatePicker(true);
+                  }}
+                >
+                  <Ionicons name="calendar-outline" size={20} color={request.incident_date ? "#800080" : "gray"} />
+                  <Text style={[styles.dateText, request.incident_date && styles.dateTextSelected]}>
+                    {request.incident_date ? request.incident_date : "Select Date"} 
+                  </Text>
+                </TouchableOpacity>
+
+              </View>
+            </Modal>
+
+            <TouchableOpacity style={styles.fileUpload} onPress={pickFile}>
+              <Text style={styles.fileText}>
+                {file ? t("File Selected") : t("Attach Files(Image)")}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+              <Text style={styles.buttonText}>{t("Submit")}</Text>
+            </TouchableOpacity>
+          </View>
+          </ScrollView>
+          {success && complaintID ? (
+          <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.iconContainer}>
+              <Ionicons name="checkmark-done-circle-outline" size={60} color="#94098A" />
+            </View>
+            <Text style={styles.modalTitle}>{t("Thank you for your submission!")}</Text>
+            <Text style={styles.modalText}>
+              {t("Your reference number is ")}{"\n"}
+              <Text style={styles.modalTexts}>EDRAPPPLAE{complaintID}</Text>
+            </Text>
+            <Text style={styles.modalText}>{t("Kindly keep it safe for future use.")}</Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.agreeButton}
                 onPress={() => {
-                  setTempDate(date);
-                  setShowDatePicker(true);
+                  setSuccess(false);
+                  setRequest({
+                    title: "",
+                    description: "",
+                    incident_date: "",
+                  });
+                  setFile(null);
+                  router.replace("/(user)/HomeScreen");
                 }}
               >
-                <Ionicons name="calendar-outline" size={20} color={request.incident_date ? "#800080" : "gray"} />
-                <Text style={[styles.dateText, request.incident_date && styles.dateTextSelected]}>
-                  {request.incident_date ? request.incident_date : "Select Date"} 
-                </Text>
+                <Text style={styles.agreeButtonText}>{t("Ok")}</Text>
               </TouchableOpacity>
-
             </View>
-          </Modal>
-
-          <TouchableOpacity style={styles.fileUpload} onPress={pickFile}>
-            <Text style={styles.fileText}>
-              {file ? "File Selected" : "Attach Files (Images)"}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-            <Text style={styles.buttonText}>{t("Submit")}</Text>
-          </TouchableOpacity>
+          </View>
         </View>
-        </ScrollView>
-        {success && complaintID ? (
-         <View style={styles.modalOverlay}>
-         <View style={styles.modalContainer}>
-           <View style={styles.iconContainer}>
-             <Ionicons name="checkmark-done-circle-outline" size={60} color="#94098A" />
-           </View>
-           <Text style={styles.modalTitle}>{t("Thank you for your submission!")}</Text>
-           <Text style={styles.modalText}>
-             {t("Your reference number is ")}{"\n"}
-             <Text style={styles.modalTexts}>EDRAPPPLAE{complaintID}</Text>
-           </Text>
-           <Text style={styles.modalText}>{t("Kindly keep it safe for future use.")}</Text>
-           <View style={styles.buttonContainer}>
-             <TouchableOpacity
-               style={styles.agreeButton}
-               onPress={() => {
-                 setSuccess(false);
-                 setRequest({
-                   title: "",
-                   description: "",
-                   incident_date: "",
-                 });
-                 setFile(null);
-                 router.replace("/(user)/HomeScreen");
-               }}
-             >
-               <Text style={styles.agreeButtonText}>{t("okay")}</Text>
-             </TouchableOpacity>
-           </View>
-         </View>
-       </View>
-      ) : null}
+        ) : null} 
+      </PaperProvider>
     </>
   );
 };
@@ -300,7 +313,7 @@ const styles = StyleSheet.create({
    
   },
   modalContent:{
-    backgroundColor: "#FCE4FF", padding: 10, borderRadius: 0
+    backgroundColor: "#bd20b1", padding: 10, borderRadius: 0
 
   },
   
@@ -310,7 +323,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#800080",
     marginBottom: 20,
-    textAlign: "center",
+    
   },
   input: {
     width: "100%",
@@ -319,10 +332,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     borderColor: "#ccc",
-    backgroundColor: "#fff",
+    backgroundColor: "white", 
+    color: "black", 
   },
   textArea: {
-    height: 80,
+    height: 100,
+    textAlignVertical: "top",
+  
   },
   datePickerContainer: {
     padding: 15,
@@ -349,7 +365,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonText: {
-    color: "#fff",
+    color: "white",
     fontWeight: "bold",
   },
   modalOverlay: {
@@ -365,16 +381,16 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: "85%",
-    backgroundColor: "#FCE4FF",
+    backgroundColor: "#bd20b1",
     borderRadius: 20,
     padding: 20,
     alignItems: "center",
     justifyContent: "center",
     elevation: 5,
-    textAlign: "center",  // Ensures text is centered within the container
+    textAlign: "center",  
   },
   iconContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 50,
     marginBottom: 10,
@@ -384,7 +400,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#94098A",
     marginBottom: 10,
-    textAlign: "center",  // This will center the text
+    textAlign: "center",  
   },
   modalText: {
     fontSize: 16,
@@ -400,7 +416,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end', // Pushes the button to the right side
+    justifyContent: 'flex-end', 
     width: '100%',
   },
   agreeButton: {
@@ -433,7 +449,7 @@ const styles = StyleSheet.create({
   dateText: {
     marginLeft: 10,
     fontSize: 16,
-    color: "gray",
+    color: "black",
   },
   
   dateTextSelected: {

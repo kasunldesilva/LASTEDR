@@ -8,13 +8,22 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Appbar } from "react-native-paper";
 import * as SecureStore from "expo-secure-store";
-
+import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 export default function ComplaintsList() {
   const router = useRouter();
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
    const { t } = useTranslation();
+   const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: "white",
+      text: "black",
+      placeholder: "gray",
+    },
+  };
 
    useEffect(() => {
     const fetchComplaints = async () => {
@@ -74,73 +83,74 @@ export default function ComplaintsList() {
   
   
   return (
-    <SafeAreaView style={styles.safeContainer}>
-     
-      <Appbar.Header style={styles.appBar}>
-                  <Appbar.Content title="" />
-                  <View style={styles.titleContainer}>
-                    <Appbar.Content title="EC EDR" />
-                  </View>
-                  <Appbar.Action icon="account" onPress={() => {}} />
-                  <Appbar.Action icon="dots-vertical" onPress={() => {}} />
-      </Appbar.Header>
-     
-      <View style={styles.container}>
-       <Text style={styles.title}>{t("Local Authorities Election")}- 2025</Text>
-        <Text style={styles.subHeader}>{t("My Complains/ Requests")}</Text>
-
+    <>
+      <PaperProvider theme={theme}>
+          <Appbar.Header style={styles.appBar}>
+                      <Appbar.Content title="" />
+                      <View style={styles.titleContainer}>
+                        <Appbar.Content title="EC EDR" />
+                      </View>
+                      <Appbar.Action icon="account" onPress={() => {}} />
+                      <Appbar.Action icon="dots-vertical" onPress={() => {}} />
+          </Appbar.Header>
         
-        {loading && <ActivityIndicator size="large" color="#9C2A8E" />}
+          <View style={styles.container}>
+          <Text style={styles.title}>{t("Local Authorities Election")}- 2025</Text>
+            <Text style={styles.subHeader}>{t("My Complains/ Requests")}</Text>
 
-          {error ? (
-            <Text style={styles.error}>{error}</Text>
-          ) : complaints.length === 0 && !loading ? (
-            <Text style={styles.noData}>{t("No Complaints and Requests")}</Text>
-          ) : (
-            <FlatList
-            data={complaints}
-            keyExtractor={(item) => item.id.toString()}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 20 }}
-            renderItem={({ item }) => (
-              <View style={styles.card}>
-                  <View style={styles.containers}>
-                          <LinearGradient
-                              colors={["#662483", "#c8057f"]}// Purple to Blue gradient
-                               start={{ x: 0, y: 0 }}
-                               end={{ x: 1, y: 0 }}
-                               style={styles.badge}
-                              >
-                                <Text style={styles.badgeText}>
-                                  {item?.item_type === 'COMPLAIN' ? t('Complain') : item?.item_type === 'REQUEST' ? t('Request') : t('')}
-                                </Text>
+            
+            {loading && <ActivityIndicator size="large" color="#9C2A8E" />}
 
-                            </LinearGradient>
+              {error ? (
+                <Text style={styles.error}>{error}</Text>
+              ) : complaints.length === 0 && !loading ? (
+                <Text style={styles.noData}>{t("No Complaints and Requests")}</Text>
+              ) : (
+                <FlatList
+                data={complaints}
+                keyExtractor={(item) => item.id.toString()}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 20 }}
+                renderItem={({ item }) => (
+                  <View style={styles.card}>
+                      <View style={styles.containers}>
+                              <LinearGradient
+                                  colors={["#662483", "#c8057f"]}// Purple to Blue gradient
+                                  start={{ x: 0, y: 0 }}
+                                  end={{ x: 1, y: 0 }}
+                                  style={styles.badge}
+                                  >
+                                    <Text style={styles.badgeText}>
+                                      {item?.item_type === 'COMPLAIN' ? t('Complain') : item?.item_type === 'REQUEST' ? t('Request') : t('')}
+                                    </Text>
+
+                                </LinearGradient>
+                        </View>
+              
+                    <View style={styles.row}>
+                      <View style={styles.details}>
+                        <Text style={styles.boldText}>{t("Reference Number")}:</Text>
+                        <Text style={styles.text}>EDRAPPLAE{item.id}</Text>
+                        <Text style={styles.boldText}>{t("Title")}:</Text>
+                        <Text style={styles.text}>{item.title}</Text>
+                        <Text style={styles.boldText}>{t("Status")}:</Text>
+                        <Text style={styles.texts}>{item.status}</Text>
+                      </View>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => router.push({ pathname: "/(cr)/fulldetail", params: { id: item.id } })}
+                      >
+                        <Text style={styles.buttonText}>{t("Details")}</Text>
+                      </TouchableOpacity>
                     </View>
-          
-                <View style={styles.row}>
-                  <View style={styles.details}>
-                    <Text style={styles.boldText}>{t("Reference Number")}:</Text>
-                    <Text style={styles.text}>EDRAPPLAE{item.id}</Text>
-                    <Text style={styles.boldText}>{t("Title")}:</Text>
-                    <Text style={styles.text}>{item.title}</Text>
-                    <Text style={styles.boldText}>{t("Status")}:</Text>
-                    <Text style={styles.texts}>{item.status}</Text>
                   </View>
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => router.push({ pathname: "/(cr)/fulldetail", params: { id: item.id } })}
-                  >
-                    <Text style={styles.buttonText}>{t("Details")}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-          />
-          )}
+                )}
+              />
+              )}
 
-      </View>
-    </SafeAreaView>
+          </View>
+        </PaperProvider>
+    </>
   );
 }
 

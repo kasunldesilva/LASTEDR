@@ -9,9 +9,9 @@ const _layout = () => {
         <Stack.Screen name="Login"  options={{headerShown:false}} />
         <Stack.Screen name="Register"  options={{headerShown:false}} />
         <Stack.Screen name="Selecter" options={{headerShown:false}} />
-        <Stack.Screen name= "ResetPassword" />
+      
         <Stack.Screen name= "OTPVerification" options={{headerShown:false}} />
-        <Stack.Screen name= "ResendOTP" options={{headerShown:false}}/>
+       
         <Stack.Screen name= "test" options={{headerShown:false}}/>
         
 

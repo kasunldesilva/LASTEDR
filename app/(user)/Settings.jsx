@@ -13,19 +13,31 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import { useRouter } from "expo-router"; 
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
+import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 
 const SettingsScreen = () => {
   const { t } = useTranslation();
   const router = useRouter(); 
   const [visible, setVisible] = useState(false);
   const [logoutVisible, setLogoutVisible] = useState(false);
+  
 
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
   const showLogoutDialog = () => setLogoutVisible(true);
   const hideLogoutDialog = () => setLogoutVisible(false);
-
+  
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: "white",
+      text: "black",
+      placeholder: "gray",
+    },
+  };
+  
   const changeLanguage = (lang) => {
     i18n.changeLanguage(lang);
     hideDialog();
@@ -42,83 +54,84 @@ const SettingsScreen = () => {
 
   return (
     <>
-      
-      <Appbar.Header style={styles.appBar}>
-        <Appbar.Content title="" />
-        <View style={styles.titleContainer}>
-          <Appbar.Content title="EC EDR" />
-        </View>
-        <Appbar.Action icon="account" onPress={() => {}} />
-        <Appbar.Action icon="dots-vertical" onPress={showLogoutDialog} />  
-      </Appbar.Header>
+      <PaperProvider theme={theme}>
+        <Appbar.Header style={styles.appBar}>
+          <Appbar.Content title="" />
+          <View style={styles.titleContainer}>
+            <Appbar.Content title="EC EDR" />
+          </View>
+          <Appbar.Action icon="account" onPress={() => {}} />
+          <Appbar.Action icon="dots-vertical" onPress={showLogoutDialog} />  
+        </Appbar.Header>
 
-
-     
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <List.Section>
-          <List.Subheader style={styles.subheader}>{t("General")}</List.Subheader>
-          <List.Item
-            title={t("Language")}
-            description={i18n.language === "en" ? "English" : i18n.language === "si" ? "සිංහල" : "தமிழ்"}
-            left={() => <Avatar.Icon size={40} icon="web" style={styles.icon} />}
-            onPress={showDialog}
-          />
-        </List.Section>
-
-        <Divider style={styles.divider} />
-
-        <List.Section>
-          <List.Subheader style={styles.subheader}>{t("About")}</List.Subheader>
-          <List.Item
-            title={t("Help")}
-            description="Get help on how to use the app"
-            left={() => <Avatar.Icon size={40} icon="help-circle" style={styles.icon} />}
-            onPress={() => router.push("/(cr)/details")} 
-          />
-          <List.Item
-            title={t("Privacy Policy")}
-            left={() => <Avatar.Icon size={40} icon="shield" style={styles.iconPurple} />}
-            onPress={() => router.push("/privacy-policy")} 
-          />
-          <List.Item
-            title={t("App Version")}
-            description="1.0.1 (3)"
-            left={() => <Avatar.Icon size={40} icon="information" style={styles.icon} />}
-          />
-        </List.Section>
-
-        <Divider style={styles.divider} />
 
       
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <List.Section>
+            <List.Subheader style={styles.subheader}>{t("General")}</List.Subheader>
+            <List.Item
+              title={t("Language")}
+              description={i18n.language === "en" ? "English" : i18n.language === "si" ? "සිංහල" : "தமிழ்"}
+              left={() => <Avatar.Icon size={40} icon="web" style={styles.icon} />}
+              onPress={showDialog}
+            />
+          </List.Section>
+
+          <Divider style={styles.divider} />
+
+          <List.Section>
+            <List.Subheader style={styles.subheader}>{t("About")}</List.Subheader>
+            <List.Item
+              title={t("Help")}
+              description={t("Get help on how to use the app")}
+              left={() => <Avatar.Icon size={40} icon="help-circle" style={styles.icon} />}
+              onPress={() => router.push("/(cr)/details")} 
+            />
+            <List.Item
+              title={t("Privacy Policy")}
+              left={() => <Avatar.Icon size={40} icon="shield" style={styles.iconPurple} />}
+              
+            />
+            <List.Item
+              title={t("App Version")}
+              description="1.0.1 (3)"
+              left={() => <Avatar.Icon size={40} icon="information" style={styles.icon} />}
+            />
+          </List.Section>
+
+          <Divider style={styles.divider} />
+
         
-      </ScrollView>
-
-     
-      <Portal>
-        <Dialog visible={visible} onDismiss={hideDialog}>
-          <Dialog.Title style={styles.dialogTitle}>{t("Select Language")}</Dialog.Title>
-          <Dialog.Content>
-            <Button mode="contained" style={styles.languageButton} onPress={() => changeLanguage("en")}>English</Button>
-            <Button mode="contained" style={styles.languageButton} onPress={() => changeLanguage("si")}>සිංහල</Button>
-            <Button mode="contained" style={styles.languageButton} onPress={() => changeLanguage("ta")}>தமிழ்</Button>
-          </Dialog.Content>
-        </Dialog>
-      </Portal>
+          
+        </ScrollView>
 
       
-      <Portal>
-        <Dialog visible={logoutVisible} onDismiss={hideLogoutDialog}>
-          <Dialog.Title style={styles.dialogTitle}>{t("Logout")}</Dialog.Title>
-          <Dialog.Content>
-            <Button mode="contained" style={styles.languageButton} onPress={handleLogout}>
-              {t("Yes, Logout")}
-            </Button>
-            <Button mode="outlined" style={styles.languageButton} onPress={hideLogoutDialog}>
-              {t("Cancel")}
-            </Button>
-          </Dialog.Content>
-        </Dialog>
-      </Portal>
+        <Portal>
+          <Dialog visible={visible} onDismiss={hideDialog}>
+            <Dialog.Title style={styles.dialogTitle}>{t("Select Language")}</Dialog.Title>
+            <Dialog.Content>
+              <Button mode="contained" style={styles.languageButton} onPress={() => changeLanguage("en")}>English</Button>
+              <Button mode="contained" style={styles.languageButton} onPress={() => changeLanguage("si")}>සිංහල</Button>
+              <Button mode="contained" style={styles.languageButton} onPress={() => changeLanguage("ta")}>தமிழ்</Button>
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+
+        
+        <Portal>
+          <Dialog visible={logoutVisible} onDismiss={hideLogoutDialog}>
+            <Dialog.Title style={styles.dialogTitle}>{t("Logout")}</Dialog.Title>
+            <Dialog.Content>
+              <Button mode="contained" style={styles.languageButton} onPress={handleLogout}>
+                {t("Yes")}
+              </Button>
+              <Button mode="outlined" style={styles.languageButton} onPress={hideLogoutDialog}>
+                {t("No")}
+              </Button>
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+        </PaperProvider>
     </>
   );
 };
@@ -127,13 +140,8 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 20,
   },
-  appbar: {
-    backgroundColor: "white",
-  },
-  appbarTitle: {
-    color: "white",
-    fontWeight: "bold",
-  },
+  
+  
   subheader: {
     color: "#94098A",
     fontSize: 16,

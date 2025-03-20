@@ -157,6 +157,7 @@ export default function Register() {
               <Ionicons name="person-outline" size={20} color="#94098A" />
               <TextInput
                 placeholder={t("Username")}
+                placeholderTextColor="gray" 
                 style={styles.input}
                 onChangeText={(text) => setForm({ ...form, username: text })}
               />
@@ -167,6 +168,7 @@ export default function Register() {
               <Ionicons name="card-outline" size={20} color="#94098A" />
               <TextInput
                 placeholder={t("NIC")}
+                placeholderTextColor="gray" 
                 style={styles.input}
                 onChangeText={(text) => setForm({ ...form, nic: text })}
               />
@@ -177,6 +179,7 @@ export default function Register() {
               <Ionicons name="call-outline" size={20} color="#94098A" />
               <TextInput
                 placeholder={t("Mobile Number")}
+                placeholderTextColor="gray" 
                 style={styles.input}
                 keyboardType="phone-pad"
                 onChangeText={(text) => setForm({ ...form, mobile: text })}
@@ -188,6 +191,7 @@ export default function Register() {
               <Ionicons name="lock-closed-outline" size={20} color="#94098A" />
               <TextInput
                 placeholder={t("Password")}
+                placeholderTextColor="gray" 
                 style={styles.input}
                 secureTextEntry={!showPassword}
                 onChangeText={(text) => setForm({ ...form, password: text })}
@@ -206,6 +210,7 @@ export default function Register() {
               <Ionicons name="lock-closed-outline" size={20} color="#94098A" />
               <TextInput
                 placeholder={t("Confirm Password")}
+                placeholderTextColor="gray" 
                 style={styles.input}
                 secureTextEntry={!showConfirmPassword}
                 onChangeText={(text) => setForm({ ...form, confirmPassword: text })}
@@ -298,8 +303,8 @@ const styles = StyleSheet.create({
     left: 0,  
     right: 0,
     bottom: 0,
-    width: "100%",  
-    height: "100%",
+    width: width,  
+    height: height,
   },
   
   container: {

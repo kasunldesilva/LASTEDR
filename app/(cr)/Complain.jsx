@@ -22,14 +22,15 @@ import {
   TextInput as PaperTextInput,
   Button,
 } from "react-native-paper";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import ModalSelector from "react-native-modal-selector";
 import * as Location from "expo-location";
 import * as SecureStore from "expo-secure-store";
 import { useRouter } from "expo-router";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import mime from "mime";
-
+import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 const { width, height } = Dimensions.get("window");
 
 const ComplaintScreen = () => {
@@ -53,7 +54,15 @@ const ComplaintScreen = () => {
 
   
   
-  
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: "white",
+      text: "black",
+      placeholder: "gray",
+    },
+  };
   const [formData, setFormData] = useState({
     location: "",
     village: "",
@@ -336,143 +345,145 @@ const ComplaintScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Appbar.Header style={styles.appBar}>
-            <Appbar.Content title="" />
-            <View style={styles.titleContainer}>
-              <Appbar.Content title="EC EDR" />
-            </View>
-            <Appbar.Action icon="account" onPress={() => {}} />
-            <Appbar.Action icon="dots-vertical" onPress={() => {}} />
-      </Appbar.Header>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {step === 1 ? (
-          <View style={styles.uploadContain}>
-            <Text style={styles.title}>
-              {t("Local Authorities Election")}- 2025
-            </Text>
-            <Text style={styles.headern}>{t("Add Complaint")}</Text>
-
-            <View style={styles.uploadCont}>
-              <TouchableOpacity
-                onPress={openImagePicker}
-                style={styles.uploadButton}
-              >
-                <Image
-                  source={require("../../assets/images/camara.png")}
-                  style={styles.cameraIcon}
-                />
-                <Text style={styles.uploadText}>
-                  {t("Choose Photos or Videos")}
-                </Text>
-              </TouchableOpacity>
-
-              <FlatList
-                data={images}
-                horizontal
-                renderItem={({ item }) => (
-                  <Image source={{ uri: item }} style={styles.imagePreview} />
-                )}
-                keyExtractor={(item, index) => index.toString()}
-              />
-
-              <TouchableOpacity
-                style={styles.uploadBtn}
-                onPress={uploadMultipleFiles}
-              >
-                <Text style={styles.uploadBtnText}>{t("Upload")}</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => setStep(2)}>
-                <Text style={styles.skipText}>{t("Skip")}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : (
-          <View style={styles.formContainer}>
-            <Text style={styles.titles}>
-              {t("Local Authority Election")}- 2025
-            </Text>
-            <Text style={styles.headern}>{t("Complaint Details")}</Text>
-
-            <View style={styles.formContain}>
-              <PaperTextInput
-                mode="outlined"
-                label={t("Complaint Location")}
-                right={
-                  <PaperTextInput.Icon
-                    icon="map-marker"
-                    onPress={handleLocationSelection}
-                  />
-                }
-                value={formData.location}
-                style={styles.input}
-              />
-
-              <PaperTextInput
-                mode="outlined"
-                label={t("Village of the incident")}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, village: text })
-                }
-                style={styles.input}
-              />
-
-              <View style={styles.container1}>
-                <Text style={styles.label}>{t("Select District")}</Text>
-                <View style={styles.inputs}>
-                <ModalSelector
-                    data={sriLankaDistricts}
-                    keyExtractor={(item) => String(item.value)}
-                    labelExtractor={(item) => item.label}
-                    initValue={formData.district 
-                      ? sriLankaDistricts.find(d => d.value === formData.district)?.label 
-                      : t("Select District")
-                    }
-                    onChange={(option) => 
-                      setFormData(prevState => ({ ...prevState, district: option.value }))
-                    }
-                    style={styles.selector}
-                    selectStyle={styles.selectStyle}
-                    selectTextStyle={styles.selectTextStyle}
-                    optionContainerStyle={styles.optionContainerStyle}
-                    optionTextStyle={styles.optionTextStyle}
-                    cancelStyle={styles.cancelStyle}
-                    cancelTextStyle={styles.cancelTextStyle}
-                  />
-
-
-                </View>
+       <PaperProvider theme={theme}>
+        <Appbar.Header style={styles.appBar}>
+              <Appbar.Content title="" />
+              <View style={styles.titleContainer}>
+                <Appbar.Content title="EC EDR" />
               </View>
+              <Appbar.Action icon="account" onPress={() => {}} />
+              <Appbar.Action icon="dots-vertical" onPress={() => {}} />
+        </Appbar.Header>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          {step === 1 ? (
+            <View style={styles.uploadContain}>
+              <Text style={styles.title}>
+                {t("Local Authorities Election")}- 2025
+              </Text>
+              <Text style={styles.headern}>{t("Add Complaint")}</Text>
 
-              <PaperTextInput
-                mode="outlined"
-                label={t("Title")}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, title: text })
-                }
-                style={styles.input}
-              />
+              <View style={styles.uploadCont}>
+                <TouchableOpacity
+                  onPress={openImagePicker}
+                  style={styles.uploadButton}
+                >
+                  <Image
+                    source={require("../../assets/images/camara.png")}
+                    style={styles.cameraIcon}
+                  />
+                  <Text style={styles.uploadText}>
+                    {t("Choose Photos or Videos")}
+                  </Text>
+                </TouchableOpacity>
 
-              <PaperTextInput
-                mode="outlined"
-                label={t("Description")}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, description: text })
-                }
-                multiline
-                style={styles.textArea}
-              />
+                <FlatList
+                  data={images}
+                  horizontal
+                  renderItem={({ item }) => (
+                    <Image source={{ uri: item }} style={styles.imagePreview} />
+                  )}
+                  keyExtractor={(item, index) => index.toString()}
+                />
 
-              <PaperTextInput
+                <TouchableOpacity
+                  style={styles.uploadBtn}
+                  onPress={uploadMultipleFiles}
+                >
+                  <Text style={styles.uploadBtnText}>{t("Upload")}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => setStep(2)}>
+                  <Text style={styles.skipText}>{t("Skip")}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.formContainer}>
+              <Text style={styles.titles}>
+                {t("Local Authority Election")}- 2025
+              </Text>
+              <Text style={styles.headern}>{t("Complaint Details")}</Text>
+
+              <View style={styles.formContain}>
+                <PaperTextInput
                   mode="outlined"
-                  label={t("Date of the incident")}
-                  right={<PaperTextInput.Icon icon="calendar" />}
-                  value={formData.date}
-                  onFocus={() => setShowDatePicker(true)}
+                  label={t("Complaint Location")}
+                  right={
+                    <PaperTextInput.Icon
+                      icon="map-marker"
+                      onPress={handleLocationSelection}
+                    />
+                  }
+                  value={formData.location}
                   style={styles.input}
                 />
-                {showDatePicker && (
-                  <View style={[styles.datePickerWrapper, { top: 100 }]}>
+
+                <PaperTextInput
+                  mode="outlined"
+                  label={t("Village of the incident")}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, village: text })
+                  }
+                  style={styles.input}
+                />
+
+                <View style={styles.container1}>
+                  <Text style={styles.label}>{t("District")}</Text>
+                  <View style={styles.inputs}>
+                  <ModalSelector
+                      data={sriLankaDistricts}
+                      keyExtractor={(item) => String(item.value)}
+                      labelExtractor={(item) => item.label}
+                      initValue={formData.district 
+                        ? sriLankaDistricts.find(d => d.value === formData.district)?.label 
+                        : t("Select District")
+                      }
+                      onChange={(option) => 
+                        setFormData(prevState => ({ ...prevState, district: option.value }))
+                      }
+                      style={styles.selector}
+                      selectStyle={styles.selectStyle}
+                      selectTextStyle={styles.selectTextStyle}
+                      optionContainerStyle={styles.optionContainerStyle}
+                      optionTextStyle={styles.optionTextStyle}
+                      cancelStyle={styles.cancelStyle}
+                      cancelTextStyle={styles.cancelTextStyle}
+                    />
+
+
+                  </View>
+                </View>
+
+                <PaperTextInput
+                  mode="outlined"
+                  label={t("Title")}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, title: text })
+                  }
+                  style={styles.input}
+                  
+                />
+
+                <PaperTextInput
+                  mode="outlined"
+                  label={t("Description")}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, description: text })
+                  }
+                  multiline
+                  style={styles.textArea}
+                />
+
+                <PaperTextInput
+                    mode="outlined"
+                    label={t("Date of the incident")}
+                    right={<PaperTextInput.Icon icon="calendar" />}
+                    value={formData.date}
+                    onFocus={() => setShowDatePicker(true)}
+                    style={styles.input}
+                  />
+                  {showDatePicker && (
+                    <View style={styles.datePickerWrapper}>
                     <View style={styles.datePickerContainer}>
                       <DateTimePicker
                         mode="date"
@@ -482,75 +493,76 @@ const ComplaintScreen = () => {
                       />
                     </View>
                   </View>
-                )}
+                  )}
 
-                {/* Time Picker Input */}
-                <PaperTextInput
-                  mode="outlined"
-                  label={t("Time of the incident")}
-                  right={<PaperTextInput.Icon icon="clock-outline" />}
-                  value={formData.time}
-                  onFocus={() => setShowTimePicker(true)}
-                  style={styles.input}
-                />
-                {showTimePicker && (
-                  <View style={[styles.datePickerWrapper, { top: 100 }]}>
-                    <View style={styles.datePickerContainer}>
-                        <DateTimePicker
-                          mode="time"
-                          value={selectedTime}
-                          display={Platform.OS === "ios" ? "spinner" : "default"}
-                          onChange={handleTimeChange}
-                        />
-                      </View>
-                      </View>
-                )}
-              <TouchableOpacity
-               style={styles.submit}
-                onPress={handleSubmit}
-              >
-                <Text style={styles.uploadBtnText}>{t("Submit")}</Text>
-              </TouchableOpacity>
+                  {/* Time Picker Input */}
+                  <PaperTextInput
+                    mode="outlined"
+                    label={t("Time of the incident")}
+                    right={<PaperTextInput.Icon icon="clock-outline" />}
+                    value={formData.time}
+                    onFocus={() => setShowTimePicker(true)}
+                    style={styles.input}
+                  />
+                  {showTimePicker && (
+                    <View style={[styles.datePickerWrapper]}>
+                      <View style={styles.datePickerContainer}>
+                          <DateTimePicker
+                            mode="time"
+                            value={selectedTime}
+                            display={Platform.OS === "ios" ? "spinner" : "default"}
+                            onChange={handleTimeChange}
+                          />
+                        </View>
+                        </View>
+                  )}
+                <TouchableOpacity
+                style={styles.submit}
+                  onPress={handleSubmit}
+                >
+                  <Text style={styles.uploadBtnText}>{t("Submit")}</Text>
+                </TouchableOpacity>
 
 
-              
+                
+              </View>
+            </View>
+          )}
+        </ScrollView>
+
+        {success && complaintID ? (
+            <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="checkmark-done-circle-outline" size={60} color="#94098A" />
+              </View>
+              <Text style={styles.modalTitle}>{t("Thank you for your submission!")}</Text>
+              <Text style={styles.modalText}>
+                {t("Your reference number is ")}{"\n"}
+                <Text style={styles.modalTexts}>EDRAPPPLAE{complaintID}</Text>
+              </Text>
+              <Text style={styles.modalText}>{t("Kindly keep it safe for future use.")}</Text>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.agreeButton}
+                  onPress={() => {
+                    setSuccess(false);
+                    setRequest({
+                      title: "",
+                      description: "",
+                      incident_date: "",
+                    });
+                    setFile(null);
+                    router.replace("/(user)/HomeScreen");
+                  }}
+                >
+                  <Text style={styles.agreeButtonText}>{t("Ok")}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        )}
-      </ScrollView>
-
-      {success && complaintID ? (
-          <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="checkmark-done-circle-outline" size={60} color="#94098A" />
-            </View>
-            <Text style={styles.modalTitle}>{t("Thank you for your submission!")}</Text>
-            <Text style={styles.modalText}>
-              {t("Your reference number is ")}{"\n"}
-              <Text style={styles.modalTexts}>EDRAPPPLAE{complaintID}</Text>
-            </Text>
-            <Text style={styles.modalText}>{t("Kindly keep it safe for future use.")}</Text>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.agreeButton}
-                onPress={() => {
-                  setSuccess(false);
-                  setRequest({
-                    title: "",
-                    description: "",
-                    incident_date: "",
-                  });
-                  setFile(null);
-                  router.replace("/(user)/HomeScreen");
-                }}
-              >
-                <Text style={styles.agreeButtonText}>{t("okay")}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-        ) : null}
+          ) : null}
+          </PaperProvider>
 
     </View>
   );
@@ -672,10 +684,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     elevation: 5,
-    textAlign: "center",  // Ensures text is centered within the container
+    textAlign: "center",  
   },
   iconContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 50,
     marginBottom: 10,
@@ -685,7 +697,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#94098A",
     marginBottom: 10,
-    textAlign: "center",  // This will center the text
+    textAlign: "center", 
   },
   modalText: {
     fontSize: 16,
@@ -701,7 +713,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end', // Pushes the button to the right side
+    justifyContent: 'flex-end',
     width: '100%',
   },
   agreeButton: {
@@ -711,7 +723,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   agreeButtonText: {
-    color: "#fff",
+    color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -739,9 +751,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#333",
+    
+    marginBottom: 2,
+    color: "black",
   },
   inputs: {
     width: "100%",
@@ -783,6 +795,24 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     textAlign: "center",
+  },datePickerWrapper: {
+    position: "absolute",
+    top: "40%",
+    left: "40%",
+    transform: [{ translateX: -140 }, { translateY: -140 }],
+    zIndex: 8,
+  },
+  datePickerContainer: {
+    backgroundColor: "#bd20b1",
+    padding: 10,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 5, 
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   
 });

@@ -14,7 +14,7 @@ import { Appbar } from "react-native-paper";
 import Complain from "../(cr)/Complain";
 import Request from "../(cr)/Request";
 import { LinearGradient } from "expo-linear-gradient"; 
-
+import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 const ElectionScreen = () => {
   const [activeScreen, setActiveScreen] = useState("Home");
   const { t } = useTranslation();
@@ -26,6 +26,16 @@ const ElectionScreen = () => {
     }
     return false; 
   };
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: "white",
+      text: "black",
+      placeholder: "gray",
+    },
+  };
+  
 
   useEffect(() => {
     const backAction = () => {
@@ -49,57 +59,59 @@ const ElectionScreen = () => {
 
   return (
     <>
-     <Appbar.Header style={styles.appBar}>
-      <Appbar.Content title="" />
-      <View style={styles.titleContainer}>
-        <Appbar.Content title="EC EDR" />
-      </View>
-      <Appbar.Action icon="account" onPress={() => {}} />
-      <Appbar.Action icon="dots-vertical" onPress={() => {}} />
-    </Appbar.Header>
-
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="white" />
-        <Text style={styles.title}>{t("Local Authorities Election")} - 2025</Text>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.buttonWrapper}
-            onPress={() => setActiveScreen("complain")}
-          >
-            <LinearGradient
-              colors={["#662483", "#c8057f"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.gradientButton}
-            >
-              <Icon name="add-circle-outline" size={20} color="white" />
-              <Text style={styles.gradientButtonText}>{t("Complain")}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.buttonWrapper}
-            onPress={() => setActiveScreen("request")}
-          >
-            <LinearGradient
-              colors={["#662483", "#c8057f"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.gradientButton}
-            >
-              <Icon name="add-circle-outline" size={20} color="white" />
-              <Text style={styles.gradientButtonText}>{t("Request")}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+     <PaperProvider theme={theme}>
+      <Appbar.Header style={styles.appBar}>
+        <Appbar.Content title="" />
+        <View style={styles.titleContainer}>
+          <Appbar.Content title="EC EDR" />
         </View>
+        <Appbar.Action icon="account" onPress={() => {}} />
+        <Appbar.Action icon="dots-vertical" onPress={() => {}} />
+      </Appbar.Header>
 
-        <Text style={styles.description}>
-          {t(
-            "Choose whether you want to file a complain or make a request to ensure your concerns are handled appropriately. Selecting the correct option helps us address your issue more effectively and provide a timely resolution. \nLet us know how we can help!"
-          )}
-        </Text>
-      </SafeAreaView>
+        <SafeAreaView style={styles.container}>
+          <StatusBar barStyle="dark-content" backgroundColor="white" />
+          <Text style={styles.title}>{t("Local Authorities Election")} - 2025</Text>
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.buttonWrapper}
+              onPress={() => setActiveScreen("complain")}
+            >
+              <LinearGradient
+                colors={["#662483", "#c8057f"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.gradientButton}
+              >
+                <Icon name="add-circle-outline" size={20} color="white" />
+                <Text style={styles.gradientButtonText}>{t("Complain")}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.buttonWrapper}
+              onPress={() => setActiveScreen("request")}
+            >
+              <LinearGradient
+                colors={["#662483", "#c8057f"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.gradientButton}
+              >
+                <Icon name="add-circle-outline" size={20} color="white" />
+                <Text style={styles.gradientButtonText}>{t("Request")}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.description}>
+            {t(
+              "Choose whether you want to file a complain or make a request to ensure your concerns are handled appropriately. Selecting the correct option helps us address your issue more effectively and provide a timely resolution. \nLet us know how we can help!"
+            )}
+          </Text>
+        </SafeAreaView>
+        </PaperProvider>
     </>
   );
 };

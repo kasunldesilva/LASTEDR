@@ -104,20 +104,22 @@ const Login = () => {
             <Text style={styles.main}>{t("Login")}</Text>
 
             <View style={styles.inputContainer}>
-              <Ionicons name="person-outline" size={20} color="#888" />
+              <Ionicons name="person-outline" size={20} color="#94098A" />
               <TextInput
                 style={styles.input}
                 placeholder={t("Username")}
+                placeholderTextColor="gray" 
                 value={username}
                 onChangeText={setUsername}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Ionicons name="lock-closed-outline" size={20} color="#888" />
+              <Ionicons name="lock-closed-outline" size={20} color="#94098A" />
               <TextInput
                 style={styles.input}
                 placeholder={t("Password")}
+                placeholderTextColor="gray" 
                 secureTextEntry={!showPassword}
                 value={password}
                 onChangeText={setPassword}
@@ -158,8 +160,8 @@ const Login = () => {
     left: 0,  
     right: 0,
     bottom: 0,
-    width: "100%",  
-    height: "100%",
+    width: width,  
+    height: height,
   },
   
   

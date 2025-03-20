@@ -6,7 +6,7 @@ import CustomPieChart from '../../components/CustomPieChart';
 import { Svg, Circle, Text as SvgText } from "react-native-svg";
 
 
-
+import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 
 import * as SecureStore from "expo-secure-store";
 import { Appbar } from "react-native-paper";
@@ -28,6 +28,15 @@ export default function Dashboard() {
     const [userName, setUserName] = useState("No"); 
     const { t } = useTranslation();
     const [data, setData] = useState(null);
+    const theme = {
+      ...DefaultTheme,
+      colors: {
+        ...DefaultTheme.colors,
+        background: "white",
+        text: "black",
+        placeholder: "gray",
+      },
+    };
     const fetchDashboardData = async () => {
         setRefreshing(true);
         try {
@@ -148,118 +157,120 @@ export default function Dashboard() {
    
     return (
         <>
-            <Appbar.Header style={styles.appBar}>
-                  <Appbar.Content title="" />
-                  <View style={styles.titleContainer}>
-                    <Appbar.Content title="EC EDR" />
+           <PaperProvider theme={theme}>
+              <Appbar.Header style={styles.appBar}>
+                    <Appbar.Content title="" />
+                    <View style={styles.titleContainer}>
+                      <Appbar.Content title="EC EDR" />
+                    </View>
+                    <Appbar.Action icon="account" onPress={() => {}} />
+                    <Appbar.Action icon="dots-vertical" onPress={() => {}} />
+              </Appbar.Header>
+
+              <ScrollView style={styles.container}   refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+                  <View style={styles.header}>
+                      <Text style={styles.title}>{t("Local Authorities Election")}- 2025</Text>
                   </View>
-                  <Appbar.Action icon="account" onPress={() => {}} />
-                  <Appbar.Action icon="dots-vertical" onPress={() => {}} />
-                </Appbar.Header>
 
-            <ScrollView style={styles.container}   refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>{t("Local Authorities Election")}- 2025</Text>
-                </View>
+                  <Text style={styles.welcome}>{t("Welcome Back! Hi")},{userName} </Text>
 
-                <Text style={styles.welcome}>{t("Welcome Back! Hi")},{userName} </Text>
-
-                 <View style={styles.buttonContainer}>
-                          <TouchableOpacity
-                            style={styles.buttonWrapper}
-                            onPress={() => router.push("/(user)/ElectionScreen")}
-                          >
-                            <LinearGradient
-                              colors={["#662483", "#c8057f"]}
-                              start={{ x: 0, y: 0 }}
-                              end={{ x: 1, y: 0 }}
-                              style={styles.gradientButton}
+                  <View style={styles.buttonContainer}>
+                            <TouchableOpacity
+                              style={styles.buttonWrapper}
+                              onPress={() => router.push("/(user)/ElectionScreen")}
                             >
-                              <Icon name="add-circle-outline" size={20} color="white" />
-                              <Text style={styles.gradientButtonText}>{t("Add Complaint or Request")}</Text>
-                            </LinearGradient>
-                          </TouchableOpacity>
-                
-                          
-                </View>
-                
-        <View style={styles.row}>
-          
-            <View style={styles.chartCard}>
-                <Text style={styles.chartTitle}>{t("All Complaints")}</Text>
-                <View style={styles.chartWrapper}>
-                <CustomPieChart 
-                    data={domainData1} 
-                    totalCount={dashboardData.total_user_complain ||0} 
-                    style={{ width: 150, height: 150 }}  
-                    />
-
-
-               
-                
-               
-                
-                </View>
-            </View>
-
+                              <LinearGradient
+                                colors={["#662483", "#c8057f"]}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={styles.gradientButton}
+                              >
+                                <Icon name="add-circle-outline" size={20} color="white" />
+                                <Text style={styles.gradientButtonText}>{t("Add Complaint or Request")}</Text>
+                              </LinearGradient>
+                            </TouchableOpacity>
+                  
+                            
+                  </View>
+                  
+          <View style={styles.row}>
             
-            <View style={styles.chartCard}>
-                <Text style={styles.chartTitle}>{t("All Requests")}</Text> 
-                <View style={styles.chartWrapper}>
-                    <CustomPieChart 
-                    data={domainData1} 
-                    totalCount={dashboardData.total_user_request||0} 
-                    style={{ width: 150, height: 150 }}  
-                    />
+              <View style={styles.chartCard}>
+                  <Text style={styles.chartTitle}>{t("All Complaints")}</Text>
+                  <View style={styles.chartWrapper}>
+                  <CustomPieChart 
+                      data={domainData} 
+                      totalCount={dashboardData.total_user_complain ||0} 
+                      style={{ width: 150, height: 150 }}  
+                      />
+
 
                 
-            
-                    
-                </View>
-            </View>
-        </View>
-                <Text style={styles.sectionTitle}>{t("Latest Complaint / Request")}</Text>
+                  
+                
+                  
+                  </View>
+              </View>
 
-                {complaints.length > 0 ? (
-                    <ScrollView >
-                        {complaints.map((item) => (
-                            <View style={styles.cards} key={item.id}>
-                                <View style={styles.containers}>
-                                    <LinearGradient
-                                        colors={["#662483", "#c8057f"]}
-                                        start={{ x: 0, y: 0 }}
-                                        end={{ x: 1, y: 0 }}
-                                        style={styles.badge}
-                                    >
-                                        <Text style={styles.badgeText}> {item?.item_type === 'COMPLAIN' ? t('Complain') : item?.item_type === 'REQUEST' ? t('Request') : t('')}</Text>
-                                    </LinearGradient>
-                                    </View>
-                                                            
+              
+              <View style={styles.chartCard}>
+                  <Text style={styles.chartTitle}>{t("All Requests")}</Text> 
+                  <View style={styles.chartWrapper}>
+                      <CustomPieChart 
+                      data={domainData1} 
+                      totalCount={dashboardData.total_user_request||0} 
+                      style={{ width: 150, height: 150 }}  
+                      />
 
-                                <View style={styles.row}>
-                                    <View style={styles.details}>
-                                        <Text style={styles.boldText}>{t("Reference Number")}:</Text>
-                                        <Text style={styles.text}>EDRAPPLAE{item?.id || "N/A"}</Text>
-                                        <Text style={styles.boldText}>{t("Title")}:  <Text style={styles.text}>{item?.title || "No Title"}</Text></Text>
-                                       
-                                        <Text style={styles.boldText}>{t("Status")}:  <Text style={styles.boldTexts}>{item?.status || "No Status"}</Text></Text>
+                  
+              
+                      
+                  </View>
+              </View>
+          </View>
+                  <Text style={styles.sectionTitle}>{t("Latest Complaint / Request")}</Text>
+
+                  {complaints.length > 0 ? (
+                      <ScrollView >
+                          {complaints.map((item) => (
+                              <View style={styles.cards} key={item.id}>
+                                  <View style={styles.containers}>
+                                      <LinearGradient
+                                          colors={["#662483", "#c8057f"]}
+                                          start={{ x: 0, y: 0 }}
+                                          end={{ x: 1, y: 0 }}
+                                          style={styles.badge}
+                                      >
+                                          <Text style={styles.badgeText}> {item?.item_type === 'COMPLAIN' ? t('Complain') : item?.item_type === 'REQUEST' ? t('Request') : t('')}</Text>
+                                      </LinearGradient>
+                                      </View>
+                                                              
+
+                                  <View style={styles.row}>
+                                      <View style={styles.details}>
+                                          <Text style={styles.boldText}>{t("Reference Number")}:</Text>
+                                          <Text style={styles.text}>EDRAPPLAE{item?.id || "N/A"}</Text>
+                                          <Text style={styles.boldText}>{t("Title")}:  <Text style={styles.text}>{item?.title || "No Title"}</Text></Text>
                                         
-                                    </View>
-                                    <TouchableOpacity
-                                        style={styles.button}
-                                        onPress={() => router.push({ pathname: "/(cr)/fulldetail", params: { id: item?.id } })}
-                                    >
-                                        <Text style={styles.buttonText}>{t("Details")}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        ))}
-                    </ScrollView>
-                ) : (
-                    <Text style={styles.noData}>No complaints found</Text>
-                )}
+                                          <Text style={styles.boldText}>{t("Status")}:  <Text style={styles.boldTexts}>{item?.status || "No Status"}</Text></Text>
+                                          
+                                      </View>
+                                      <TouchableOpacity
+                                          style={styles.button}
+                                          onPress={() => router.push({ pathname: "/(cr)/fulldetail", params: { id: item?.id } })}
+                                      >
+                                          <Text style={styles.buttonText}>{t("Details")}</Text>
+                                      </TouchableOpacity>
+                                  </View>
+                              </View>
+                          ))}
+                      </ScrollView>
+                  ) : (
+                      <Text style={styles.noData}>No complaints found</Text>
+                  )}
 
-            </ScrollView>
+              </ScrollView>
+              </PaperProvider>
         </>
     );
 }

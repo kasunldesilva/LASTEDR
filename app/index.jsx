@@ -7,10 +7,11 @@ import {
   Text,
   TouchableOpacity,
   useWindowDimensions,
+  Dimensions
 } from "react-native";
 import { useRouter } from "expo-router";
 import BackgroundSvg from "../assets/images/background.svg"; 
-
+const { width, height } = Dimensions.get("window");
 export default function Index() {
   const router = useRouter();
   const { width, height } = useWindowDimensions();
@@ -76,8 +77,8 @@ const styles = {
     left: 0,  
     right: 0,
     bottom: 0,
-    width: "100%",  
-    height: "100%",
+    width: width,  
+    height: height,
   },
 
   scrollContainer: {
