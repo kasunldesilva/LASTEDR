@@ -115,7 +115,7 @@ export default function ComplaintsList() {
                   <View style={styles.card}>
                       <View style={styles.containers}>
                               <LinearGradient
-                                  colors={["#662483", "#c8057f"]}// Purple to Blue gradient
+                                  colors={["#662483", "#c8057f"]}
                                   start={{ x: 0, y: 0 }}
                                   end={{ x: 1, y: 0 }}
                                   style={styles.badge}
