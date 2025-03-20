@@ -4,29 +4,15 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { 
-  List, 
-  Divider, 
-  Avatar, 
-  Appbar, 
-  Dialog, 
-  Portal, 
-  Button, 
-  Menu 
-} from "react-native-paper";
+import {  List, Divider, Avatar, Appbar,  Dialog,  Portal,  Button,   Menu } from "react-native-paper";
 import * as DocumentPicker from "expo-document-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
-
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
-
-
-
 const { width, height } = Dimensions.get("window");
-
 const Request = () => {
   const router = useRouter();
   const [request, setRequest] = useState({
@@ -40,7 +26,6 @@ const Request = () => {
     router.back();
   };
   const [menuVisible, setMenuVisible] = useState(false);
-
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
   const [file, setFile] = useState(null);
@@ -66,10 +51,7 @@ const Request = () => {
       console.error("Logout failed:", error);
     }
   };
-  
 const [tempDate, setTempDate] = useState(new Date());
-
-
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await SecureStore.getItemAsync("token");

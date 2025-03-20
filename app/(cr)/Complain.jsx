@@ -1,32 +1,11 @@
 import React, { useState, useEffect } from "react";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useTranslation } from "react-i18next";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  FlatList,
-  StyleSheet,
-  ScrollView,
-  Alert,
-  Modal,
-Platform
- 
-} from "react-native";
+import { View,Text,TouchableOpacity,Image, Dimensions,FlatList,StyleSheet, ScrollView,Alert,Modal,Platform} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import * as ImagePicker from "expo-image-picker";
-import {
-  Appbar,
-  TextInput as PaperTextInput,
-  Button,
-  Divider, 
-  Menu 
-} from "react-native-paper";
-
+import {Appbar, TextInput as PaperTextInput, Button, Divider, Menu } from "react-native-paper";
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 import ModalSelector from "react-native-modal-selector";
 import * as Location from "expo-location";
 import * as SecureStore from "expo-secure-store";
@@ -35,11 +14,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import mime from "mime";
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 const { width, height } = Dimensions.get("window");
-
 const ComplaintScreen = () => {
   const router = useRouter();
   const { t } = useTranslation();
-
   const [token, setToken] = useState(null);
   const [step, setStep] = useState(1);
   const [images, setImages] = useState([]);
@@ -57,16 +34,12 @@ const ComplaintScreen = () => {
       console.error("Logout failed:", error);
     }
   };
-
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [formDatas, setFormDatas] = useState({ district: "" });
-
   const [menuVisible, setMenuVisible] = useState(false);
-
 const openMenu = () => setMenuVisible(true);
 const closeMenu = () => setMenuVisible(false);
-  
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -306,14 +279,10 @@ const closeMenu = () => setMenuVisible(false);
     }
   };
   
-  
   useEffect(() => {
     console.log("Success State Changed:", success);
     console.log("Complaint ID Updated:", complaintID);
   }, [success, complaintID]);
-  
-  
-
   const pickImages = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -325,8 +294,7 @@ const closeMenu = () => setMenuVisible(false);
       const selectedImages = result.assets.map((asset) => asset.uri);
       setImages((prev) => [...prev, ...selectedImages]);
     }
-  };
-  
+  };  
   const pickFromCamera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
@@ -343,7 +311,6 @@ const closeMenu = () => setMenuVisible(false);
       setImages((prev) => [...prev, result.assets[0].uri]); 
     }
   };
-  
   const openImagePicker = () => {
     Alert.alert("Select Image", "Choose an option", [
       { text: "Camera", onPress: pickFromCamera },
@@ -351,11 +318,9 @@ const closeMenu = () => setMenuVisible(false);
       { text: "Cancel", style: "cancel" },
     ]);
   };
-  
   const handleBack = () => {
     router.back();
   };
-
   return (
     <View style={styles.container}>
        <PaperProvider theme={theme}>
@@ -365,7 +330,7 @@ const closeMenu = () => setMenuVisible(false);
                 <Appbar.Content title="EC EDR" />
               </View>
               <Appbar.Action icon="account" onPress={() => {}} />
-              <Menu
+                      <Menu
                             visible={menuVisible}
                             onDismiss={closeMenu}
                             anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
@@ -419,7 +384,6 @@ const closeMenu = () => setMenuVisible(false);
                   )}
                   keyExtractor={(item, index) => index.toString()}
                 />
-
                 <TouchableOpacity
                   style={styles.uploadBtn}
                   onPress={uploadMultipleFiles}
@@ -452,7 +416,6 @@ const closeMenu = () => setMenuVisible(false);
                   value={formData.location}
                   style={styles.input}
                 />
-
                 <PaperTextInput
                   mode="outlined"
                   label={t("Village of the incident")}
@@ -484,11 +447,8 @@ const closeMenu = () => setMenuVisible(false);
                       cancelStyle={styles.cancelStyle}
                       cancelTextStyle={styles.cancelTextStyle}
                     />
-
-
                   </View>
                 </View>
-
                 <PaperTextInput
                   mode="outlined"
                   label={t("Title")}
@@ -498,8 +458,7 @@ const closeMenu = () => setMenuVisible(false);
                   style={styles.input}
                   
                 />
-
-                <PaperTextInput
+               <PaperTextInput
                   mode="outlined"
                   label={t("Description")}
                   onChangeText={(text) =>
@@ -508,7 +467,6 @@ const closeMenu = () => setMenuVisible(false);
                   multiline
                   style={styles.textArea}
                 />
-
                 <PaperTextInput
                     mode="outlined"
                     label={t("Date of the incident")}
@@ -530,7 +488,7 @@ const closeMenu = () => setMenuVisible(false);
                   </View>
                   )}
 
-                  {/* Time Picker Input */}
+                 
                   <PaperTextInput
                     mode="outlined"
                     label={t("Time of the incident")}
@@ -556,15 +514,11 @@ const closeMenu = () => setMenuVisible(false);
                   onPress={handleSubmit}
                 >
                   <Text style={styles.uploadBtnText}>{t("Submit")}</Text>
-                </TouchableOpacity>
-
-
-                
+                </TouchableOpacity>        
               </View>
             </View>
           )}
         </ScrollView>
-
         {success && complaintID ? (
             <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
@@ -578,38 +532,40 @@ const closeMenu = () => setMenuVisible(false);
               </Text>
               <Text style={styles.modalText}>{t("Kindly keep it safe for future use.")}</Text>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.agreeButton}
-                  onPress={() => {
-                    setSuccess(false);
-                    setFormData({
-                      location: "",
-                      village: "",
-                      district: "",
-                      title: "",
-                      description: "",
-                      date: "",
-                      time: "",
-                    });
-                    setFile(null);
-                    router.replace("/(user)/HomeScreen");
-                  }}
-                >
-                  <Text style={styles.agreeButtonText}>{t("Ok")}</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                    style={styles.agreeButton}
+                    onPress={() => {
+                      setSuccess(false); 
+                      setFile(null); 
+
+                     
+                      setFormData({
+                        location: "",
+                        village: "",
+                        district: "",
+                        title: "",
+                        description: "",
+                        date: "",
+                        time: "",
+                      });
+
+                      
+                      setTimeout(() => {
+                        router.replace("/(user)/HomeScreen");
+                      }, 100);
+                    }}
+                  >
+                    <Text style={styles.agreeButtonText}>{t("Ok")}</Text>
+                  </TouchableOpacity>
+
               </View>
             </View>
           </View>
           ) : null}
           </PaperProvider>
-
     </View>
   );
 };
-
-
-
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "white" },
   uploadContain: { flex: 1, paddingBottom: 100 },
@@ -624,18 +580,15 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   title: {
-    fontSize: 18,
-    
+    fontSize: 18, 
     color: "#800080",
     marginBottom: 25,
     paddingLeft:20
   },
   titles: {
     fontSize: 18,
-    
     color: "#800080",
-    marginBottom: 25,
-   
+    marginBottom: 25, 
   },
   uploadButton: {
     width: 200,
@@ -663,7 +616,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontWeight: "bold",
   },
-  
   textArea: { height: 100, marginBottom: 10 },
   overlay: {
     position: "absolute",
@@ -785,8 +737,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white", 
-    
+    backgroundColor: "white",   
   },
   label: {
     fontSize: 16,
@@ -833,14 +784,14 @@ const styles = StyleSheet.create({
   cancelTextStyle: {
     color: "white",
     fontSize: 16,
-    textAlign: "center",
-  },datePickerWrapper: {
+    textAlign: "center", 
+  },
+    datePickerWrapper: {
     position: "absolute",
     top: "40%",
     left: "40%",
     transform: [{ translateX: -140 }, { translateY: -140 }],
-    zIndex: 8,
-  },
+    zIndex: 8,},
   datePickerContainer: {
     backgroundColor: "#bd20b1",
     padding: 10,
@@ -852,8 +803,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-  },
-  
+  }, 
 });
-
 export default ComplaintScreen;

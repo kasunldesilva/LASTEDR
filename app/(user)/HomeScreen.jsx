@@ -4,26 +4,11 @@ import { View, Text, StyleSheet,RefreshControl, ScrollView, ActivityIndicator, T
 import { useRouter,  useFocusEffect  } from "expo-router";
 import CustomPieChart from '../../components/CustomPieChart';
 import { Svg, Circle, Text as SvgText } from "react-native-svg";
-
-
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
-
 import * as SecureStore from "expo-secure-store";
-import { 
-  List, 
-  Divider, 
-  Avatar, 
-  Appbar, 
-  Dialog, 
-  Portal, 
-  Button, 
-  Menu 
-} from "react-native-paper";
+import { List, Divider, Avatar, Appbar, Dialog, Portal, Button,  Menu } from "react-native-paper";
 import { Mail, Plus, Folder } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
-
-
-
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import Icon from "react-native-vector-icons/Ionicons";
 export default function Dashboard() {
@@ -31,7 +16,6 @@ export default function Dashboard() {
     const [complaints, setComplaints] = useState([]);
     const [dashboardData, setDashboardData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
-
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userName, setUserName] = useState("No"); 
@@ -51,126 +35,125 @@ export default function Dashboard() {
         placeholder: "gray",
       },
     };
+    
+
     const fetchDashboardData = async () => {
-        setRefreshing(true);
-        try {
-         
-          await new Promise((resolve) => setTimeout(resolve, 1500));
-          setData("New Dashboard Data Loaded");
-        } catch (error) {
-          console.error("Error fetching dashboard data:", error);
-        }
-        setRefreshing(false);
-      };
-    
-     
-      const onRefresh = async () => {
-        await fetchDashboardData();
-      };
-    
-      
-      useFocusEffect(
-        useCallback(() => {
-          fetchDashboardData(); 
-        }, [])
-      );useFocusEffect(
-        useCallback(() => {
-          const timer = setTimeout(() => {
-            fetchDashboardData();
-          }, 500); // Delay fetching slightly
-      
-          return () => clearTimeout(timer);
-        }, [])
-      );
-      
-
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                const token = await SecureStore.getItemAsync("token");
-                const userData = await SecureStore.getItemAsync("user");
-                const user = userData ? JSON.parse(userData) : null;
-      
-                const userId = user?.id;
-                setUserName(user?.username || "No");
-      
-                if (!token || !userId) {
-                    setError("Authentication failed. Please log in again.");
-                    return;
-                }
-      
-               
-                const dashboardRes = await fetch(
-                    "https://ecedr.elections.gov.lk/test/app_edritem/dashbordvalue",
-                    {
-                        method: "GET",
-                        headers: {
-                            "Authorization": `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-      
-                let dashboardJson = await dashboardRes.json();
-                if (dashboardRes.ok) {
-                    console.log("Dashboard Data:", dashboardJson);
-                } else {
-                    console.log("Error Fetching Dashboard Data:", dashboardJson);
-                    dashboardJson = {};
-                }
-      
-                setDashboardData(dashboardJson?.data || {
-                    total_all_complain: 0,
-                    total_user_complain: 0,
-                    total_all_request: 0,
-                    total_user_request: 0,
-                });
-      
-                
-                const complaintsRes = await fetch(
-                    `https://ecedr.elections.gov.lk/test/app_edritem/latest?appUserId=${userId}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Authorization": `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-      
-                let complaintsJson = await complaintsRes.json();
-                console.log("Complaints Data:", complaintsJson);
-      
-                if (Array.isArray(complaintsJson)) {
-                    setComplaints(complaintsJson);
-                } else if (complaintsJson && complaintsJson.id) {
-                    setComplaints([complaintsJson]);
-                } else {
-                    setComplaints([]);
-                }
-            } catch (err) {
-                console.log("Error fetching data:", err.message);
-                setError("Failed to load data.");
-            } finally {
-                setLoading(false);
-            }
-        };
-      
-        fetchDashboardData();
-      }, []);
-      
-    if (loading) return <ActivityIndicator size="large" color="#9B287B" />;
-    if (error) return <Text style={styles.errorText}>{error}</Text>;
-
-   
-    const handleLogout = async () => {
+      setLoading(true);
       try {
-        await AsyncStorage.removeItem("userToken"); 
-        router.replace("/(login)/Selecter"); 
-      } catch (error) {
-        console.error("Logout failed:", error);
+          const token = await SecureStore.getItemAsync("token");
+          const userData = await SecureStore.getItemAsync("user");
+          const user = userData ? JSON.parse(userData) : null;
+
+          const userId = user?.id;
+          setUserName(user?.username || "No");
+
+          if (!token || !userId) {
+              setError("Authentication failed. Please log in again.");
+              setLoading(false);
+              return;
+          }
+
+          const dashboardRes = await fetch(
+              "https://ecedr.elections.gov.lk/test/app_edritem/dashbordvalue",
+              {
+                  method: "GET",
+                  headers: {
+                      "Authorization": `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                  },
+              }
+          );
+
+          let dashboardJson = await dashboardRes.json();
+          if (!dashboardRes.ok) {
+              console.log("Error Fetching Dashboard Data:", dashboardJson);
+              dashboardJson = {};
+          }
+
+          setDashboardData(dashboardJson?.data || {
+              total_all_complain: 0,
+              total_user_complain: 0,
+              total_all_request: 0,
+              total_user_request: 0,
+          });
+
+          const complaintsRes = await fetch(
+              `https://ecedr.elections.gov.lk/test/app_edritem/latest?appUserId=${userId}`,
+              {
+                  method: "GET",
+                  headers: {
+                      "Authorization": `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                  },
+              }
+          );
+
+          let complaintsJson = await complaintsRes.json();
+          if (Array.isArray(complaintsJson)) {
+              setComplaints(complaintsJson);
+          } else if (complaintsJson && complaintsJson.id) {
+              setComplaints([complaintsJson]);
+          } else {
+              setComplaints([]);
+          }
+      } catch (err) {
+          console.log("Error fetching data:", err.message);
+          setError("Failed to load data.");
+      } finally {
+          setLoading(false);
+          setRefreshing(false); 
       }
-    };
+  };
+
+  useEffect(() => {
+      fetchDashboardData();
+  }, []); 
+  
+  const onRefresh = () => {
+      setRefreshing(true);
+      fetchDashboardData();
+  };
+//   useEffect(() => {
+//     fetchDashboardData();
+
+    
+//     const interval = setInterval(() => {
+//         console.log("Auto-refreshing dashboard data...");
+//         fetchDashboardData();
+//     }, 30000); 
+
+//     return () => clearInterval(interval); 
+// }, []); 
+
+ 
+  const handleLogout = async () => {
+      try {
+          await AsyncStorage.removeItem("userToken"); 
+          router.replace("/(login)/Selecter"); 
+      } catch (error) {
+          console.error("Logout failed:", error);
+      }
+  };
+
+  
+  if (loading) {
+      return (
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+              <ActivityIndicator size="large" color="#9B287B" />
+          </View>
+      );
+  }
+
+  if (error) {
+      return (
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ color: "red" }}>{error}</Text>
+          </View>
+      );
+  }
+  
+   
+    
     const domainData = [
         { name: 'Tech', population: 20, color: '#64064C' },
         { name: 'Health', population: 30, color: '#94098A' },
@@ -187,105 +170,84 @@ export default function Dashboard() {
    
     return (
         <>
-           <PaperProvider theme={theme}>
-               <Appbar.Header style={styles.appBar}>
+             <PaperProvider theme={theme}>
+                  <Appbar.Header style={styles.appBar}>
                       <Appbar.Content title="" />
                       <View style={styles.titleContainer}>
-                        <Appbar.Content title="EC EDR" />
+                          <Appbar.Content title="EC EDR" />
                       </View>
-                      <Appbar.Action icon="account" onPress={() => {}} />
-                      
-                          {/* Menu for About, Help, and Logout */}
-                          <Menu
-                            visible={menuVisible}
-                            onDismiss={closeMenu}
-                            anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
-                          >
-                            <Menu.Item 
-                              onPress={() => router.push("/(cr)/details")}  
-                              title={t("Help")} 
-                              leadingIcon="help-circle"
-                            />
-                            <Menu.Item 
-                              onPress={() => {}}  
-                              title={t("About")} 
-                              leadingIcon="information"
-                            />
-                            <Divider />
-                            <Menu.Item 
-                              onPress={handleLogout}
-                              title={t("Logout")} 
-                              leadingIcon="logout"
-                            />
-                          </Menu>
-                    </Appbar.Header>
+                  <Appbar.Action icon="account" />
+                  <Menu
+                      visible={menuVisible}
+                      onDismiss={closeMenu}
+                      anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
+                  >
+                      <Menu.Item onPress={() => router.push("/(cr)/details")} title={t("Help")} leadingIcon="help-circle" />
+                      <Menu.Item onPress={() => {}} title={t("About")} leadingIcon="information" />
+                      <Divider />
+                      <Menu.Item onPress={handleLogout} title={t("Logout")} leadingIcon="logout" />
+                  </Menu>
+              </Appbar.Header>
 
-              <ScrollView style={styles.container}   refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-                  <View style={styles.header}>
-                      <Text style={styles.title}>{t("Local Authorities Election")}- 2025</Text>
+           
+              {loading ? (
+                  <View style={styles.loadingContainer}>
+                      <ActivityIndicator size="large" color="#9C2A8E" />
+                      <Text>Loading...</Text>
                   </View>
+              ) : (
+                  <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+                      <View style={styles.header}>
+                          <Text style={styles.title}>{t("Local Authorities Election")}- 2025</Text>
+                      </View>
 
-                  <Text style={styles.welcome}>{t("Welcome Back! Hi")},{userName} </Text>
+                      <Text style={styles.welcome}>{t("Welcome Back! Hi")}, {userName}</Text>
 
-                  <View style={styles.buttonContainer}>
-                            <TouchableOpacity
+                      <View style={styles.buttonContainer}>
+                          <TouchableOpacity
                               style={styles.buttonWrapper}
                               onPress={() => router.push("/(user)/ElectionScreen")}
-                            >
+                          >
                               <LinearGradient
-                                colors={["#662483", "#c8057f"]}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 0 }}
-                                style={styles.gradientButton}
+                                  colors={["#662483", "#c8057f"]}
+                                  start={{ x: 0, y: 0 }}
+                                  end={{ x: 1, y: 0 }}
+                                  style={styles.gradientButton}
                               >
-                                <Icon name="add-circle-outline" size={20} color="white" />
-                                <Text style={styles.gradientButtonText}>{t("Add Complaint or Request")}</Text>
+                                  <Icon name="add-circle-outline" size={20} color="white" />
+                                  <Text style={styles.gradientButtonText}>{t("Add Complaint or Request")}</Text>
                               </LinearGradient>
-                            </TouchableOpacity>
-                  
-                            
-                  </View>
-                  
-          <View style={styles.row}>
-            
-              <View style={styles.chartCard}>
-                  <Text style={styles.chartTitle}>{t("All Complaints")}</Text>
-                  <View style={styles.chartWrapper}>
-                  <CustomPieChart 
-                      data={domainData} 
-                      totalCount={dashboardData.total_user_complain ||0} 
-                      style={{ width: 150, height: 150 }}  
-                      />
+                          </TouchableOpacity>
+                      </View>
 
+                      <View style={styles.row}>
+                          <View style={styles.chartCard}>
+                              <Text style={styles.chartTitle}>{t("All Complaints")}</Text>
+                              <View style={styles.chartWrapper}>
+                                  <CustomPieChart 
+                                      data={domainData} 
+                                      totalCount={dashboardData.total_user_complain || 0} 
+                                      style={{ width: 150, height: 150 }}  
+                                  />                  
+                              </View>
+                          </View>
 
-                
-                  
-                
-                  
-                  </View>
-              </View>
+                          <View style={styles.chartCard}>
+                              <Text style={styles.chartTitle}>{t("All Requests")}</Text> 
+                              <View style={styles.chartWrapper}>
+                                  <CustomPieChart 
+                                      data={domainData1} 
+                                      totalCount={dashboardData.total_user_request || 0} 
+                                      style={{ width: 150, height: 150 }}  
+                                  />
+                              </View>
+                          </View>
+                      </View>
 
-              
-              <View style={styles.chartCard}>
-                  <Text style={styles.chartTitle}>{t("All Requests")}</Text> 
-                  <View style={styles.chartWrapper}>
-                      <CustomPieChart 
-                      data={domainData1} 
-                      totalCount={dashboardData.total_user_request||0} 
-                      style={{ width: 150, height: 150 }}  
-                      />
+                      <Text style={styles.sectionTitle}>{t("Latest Complaint / Request")}</Text>
 
-                  
-              
-                      
-                  </View>
-              </View>
-          </View>
-                  <Text style={styles.sectionTitle}>{t("Latest Complaint / Request")}</Text>
-
-                  {complaints.length > 0 ? (
-                      <ScrollView >
-                          {complaints.map((item) => (
+                      {complaints.length > 0 ? (
+                          complaints.map((item) => (
                               <View style={styles.cards} key={item.id}>
                                   <View style={styles.containers}>
                                       <LinearGradient
@@ -294,19 +256,18 @@ export default function Dashboard() {
                                           end={{ x: 1, y: 0 }}
                                           style={styles.badge}
                                       >
-                                          <Text style={styles.badgeText}> {item?.item_type === 'COMPLAIN' ? t('Complain') : item?.item_type === 'REQUEST' ? t('Request') : t('')}</Text>
+                                          <Text style={styles.badgeText}> 
+                                              {item?.item_type === 'COMPLAIN' ? t('Complain') : item?.item_type === 'REQUEST' ? t('Request') : t('')}
+                                          </Text>
                                       </LinearGradient>
-                                      </View>
-                                                              
+                                  </View>
 
                                   <View style={styles.row}>
                                       <View style={styles.details}>
                                           <Text style={styles.boldText}>{t("Reference Number")}:</Text>
                                           <Text style={styles.text}>EDRAPPLAE{item?.id || "N/A"}</Text>
-                                          <Text style={styles.boldText}>{t("Title")}:  <Text style={styles.text}>{item?.title || "No Title"}</Text></Text>
-                                        
-                                          <Text style={styles.boldText}>{t("Status")}:  <Text style={styles.boldTexts}>{item?.status || "No Status"}</Text></Text>
-                                          
+                                          <Text style={styles.boldText}>{t("Title")}: <Text style={styles.text}>{item?.title || "No Title"}</Text></Text>
+                                          <Text style={styles.boldText}>{t("Status")}: <Text style={styles.boldTexts}>{item?.status || "No Status"}</Text></Text>
                                       </View>
                                       <TouchableOpacity
                                           style={styles.button}
@@ -316,14 +277,13 @@ export default function Dashboard() {
                                       </TouchableOpacity>
                                   </View>
                               </View>
-                          ))}
-                      </ScrollView>
-                  ) : (
-                      <Text style={styles.noData}>No complaints found</Text>
-                  )}
-
-              </ScrollView>
-              </PaperProvider>
+                          ))
+                      ) : (
+                          <Text style={styles.noData}>No complaints found</Text>
+                      )}
+                  </ScrollView>
+              )}
+          </PaperProvider>
         </>
     );
 }
@@ -333,10 +293,7 @@ const styles = StyleSheet.create({
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
     title: { fontSize: 18, color: '#94098A' },
     welcome: { fontSize: 14, color: '#94098A', marginBottom: 10 },
-   
-   
     cards: { backgroundColor: '#fff0f9', padding: 10, borderRadius: 10,  marginBottom: 50 ,},
-    
     iconRow: { flexDirection: 'row', gap: 20 },
     row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
     chartCard: { backgroundColor: '#fff0f9', padding: 20, borderRadius: 10, alignItems: 'center', width: '48%' },
@@ -418,5 +375,9 @@ const styles = StyleSheet.create({
     left: 16, 
     justifyContent: 'center',
   },
-    
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+}
 });

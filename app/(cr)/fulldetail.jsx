@@ -16,16 +16,12 @@ import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { format } from 'date-fns'; 
-
-
 export default function FullDetailScreen() {
   const { id } = useLocalSearchParams();
   const [complaint, setComplaint] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { t, i18n } = useTranslation();
-  
-
     const router = useRouter();
     const [statusList, setStatusList] = useState([]);
     const [statusItems, setStatusItems] = useState([]);
@@ -65,15 +61,15 @@ const formatDate = (date, time) => {
   if (!date || !time) return t("");
 
   try {
-    const combinedDateTime = `${date}T${time}`; // Ensuring ISO format
+    const combinedDateTime = `${date}T${time}`; 
 
     let dateFormat;
     if (i18n.language === "en") {
-      dateFormat = "Pp"; // English format
+      dateFormat = "Pp"; 
     } else if (i18n.language === "si") {
-      dateFormat = "Pp"; // Sinhala format (adjust if needed)
+      dateFormat = "Pp"; 
     } else {
-      dateFormat = "Pp"; // Default format
+      dateFormat = "Pp";
     }
 
     return format(new Date(combinedDateTime), dateFormat);
@@ -82,11 +78,6 @@ const formatDate = (date, time) => {
     return t("Invalid Date");
   }
 };
-
-
-
-
-
   const handleBack = () => {
     router.back(); 
   };
@@ -133,9 +124,7 @@ const formatDate = (date, time) => {
             Authorization: `Bearer ${token}`,
           },
         });
-    
-       
-    
+  
         const data = await response.json();
         console.log("✅ Status API Response:", data);
     
@@ -149,8 +138,6 @@ const formatDate = (date, time) => {
         
       }
     };
-    
-  
     fetchComplaintDetails();
     fetchStatus();
   }, [id]);
@@ -329,9 +316,6 @@ const formatDate = (date, time) => {
 
            
             {renderImages()}
-
-           
-            
 
             <Text style={styles.complaintTitle}>{t("Status")}</Text>
            
