@@ -9,13 +9,22 @@ import { Svg, Circle, Text as SvgText } from "react-native-svg";
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 
 import * as SecureStore from "expo-secure-store";
-import { Appbar } from "react-native-paper";
+import { 
+  List, 
+  Divider, 
+  Avatar, 
+  Appbar, 
+  Dialog, 
+  Portal, 
+  Button, 
+  Menu 
+} from "react-native-paper";
 import { Mail, Plus, Folder } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 
 
-
+import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import Icon from "react-native-vector-icons/Ionicons";
 export default function Dashboard() {
     const router = useRouter();
@@ -28,6 +37,11 @@ export default function Dashboard() {
     const [userName, setUserName] = useState("No"); 
     const { t } = useTranslation();
     const [data, setData] = useState(null);
+    const [menuVisible, setMenuVisible] = useState(false);
+
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
+
     const theme = {
       ...DefaultTheme,
       colors: {
@@ -59,7 +73,16 @@ export default function Dashboard() {
         useCallback(() => {
           fetchDashboardData(); 
         }, [])
+      );useFocusEffect(
+        useCallback(() => {
+          const timer = setTimeout(() => {
+            fetchDashboardData();
+          }, 500); // Delay fetching slightly
+      
+          return () => clearTimeout(timer);
+        }, [])
       );
+      
 
     useEffect(() => {
         const fetchDashboardData = async () => {
@@ -140,7 +163,14 @@ export default function Dashboard() {
     if (error) return <Text style={styles.errorText}>{error}</Text>;
 
    
-    
+    const handleLogout = async () => {
+      try {
+        await AsyncStorage.removeItem("userToken"); 
+        router.replace("/(login)/Selecter"); 
+      } catch (error) {
+        console.error("Logout failed:", error);
+      }
+    };
     const domainData = [
         { name: 'Tech', population: 20, color: '#64064C' },
         { name: 'Health', population: 30, color: '#94098A' },
@@ -158,14 +188,37 @@ export default function Dashboard() {
     return (
         <>
            <PaperProvider theme={theme}>
-              <Appbar.Header style={styles.appBar}>
-                    <Appbar.Content title="" />
-                    <View style={styles.titleContainer}>
-                      <Appbar.Content title="EC EDR" />
-                    </View>
-                    <Appbar.Action icon="account" onPress={() => {}} />
-                    <Appbar.Action icon="dots-vertical" onPress={() => {}} />
-              </Appbar.Header>
+               <Appbar.Header style={styles.appBar}>
+                      <Appbar.Content title="" />
+                      <View style={styles.titleContainer}>
+                        <Appbar.Content title="EC EDR" />
+                      </View>
+                      <Appbar.Action icon="account" onPress={() => {}} />
+                      
+                          {/* Menu for About, Help, and Logout */}
+                          <Menu
+                            visible={menuVisible}
+                            onDismiss={closeMenu}
+                            anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
+                          >
+                            <Menu.Item 
+                              onPress={() => router.push("/(cr)/details")}  
+                              title={t("Help")} 
+                              leadingIcon="help-circle"
+                            />
+                            <Menu.Item 
+                              onPress={() => {}}  
+                              title={t("About")} 
+                              leadingIcon="information"
+                            />
+                            <Divider />
+                            <Menu.Item 
+                              onPress={handleLogout}
+                              title={t("Logout")} 
+                              leadingIcon="logout"
+                            />
+                          </Menu>
+                    </Appbar.Header>
 
               <ScrollView style={styles.container}   refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                   <View style={styles.header}>

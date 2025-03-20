@@ -12,7 +12,7 @@ const _layout = () => {
       
         <Stack.Screen name= "OTPVerification" options={{headerShown:false}} />
        
-        <Stack.Screen name= "test" options={{headerShown:false}}/>
+        
         
 
        
@@ -28,4 +28,4 @@ const _layout = () => {
     
 }
 
-export default _layout
+export default _layout  

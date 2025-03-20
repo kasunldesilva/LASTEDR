@@ -4,12 +4,22 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { Appbar } from "react-native-paper";
+import { 
+  List, 
+  Divider, 
+  Avatar, 
+  Appbar, 
+  Dialog, 
+  Portal, 
+  Button, 
+  Menu 
+} from "react-native-paper";
 import * as DocumentPicker from "expo-document-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Modal from "react-native-modal";
+import AsyncStorage from "@react-native-async-storage/async-storage"; 
 
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 
@@ -29,7 +39,10 @@ const Request = () => {
   const handleBack = () => {
     router.back();
   };
+  const [menuVisible, setMenuVisible] = useState(false);
 
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
   const [file, setFile] = useState(null);
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -44,6 +57,14 @@ const Request = () => {
       text: "black",
       placeholder: "gray",
     },
+  };
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("userToken"); 
+      router.replace("/(login)/Selecter"); 
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
   
 const [tempDate, setTempDate] = useState(new Date());
@@ -186,7 +207,29 @@ const [tempDate, setTempDate] = useState(new Date());
           <Appbar.BackAction onPress={handleBack} /> 
           <Appbar.Content /> 
           <Appbar.Action icon="account" onPress={() => {}} />
-          <Appbar.Action icon="dots-vertical" onPress={() => {}} />
+          <Menu
+                            visible={menuVisible}
+                            onDismiss={closeMenu}
+                            anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
+                          >
+                            <Menu.Item 
+                              onPress={() => router.push("/(cr)/details")}  
+                              title={t("Help")} 
+                              leadingIcon="help-circle"
+                            />
+                            <Menu.Item 
+                              onPress={() => {}}  
+                              title={t("About")} 
+                              leadingIcon="information"
+                            />
+                            <Divider />
+                            <Menu.Item 
+                              onPress={handleLogout}
+                              title={t("Logout")} 
+                              leadingIcon="logout"
+                            />
+                          </Menu>
+         
         </Appbar.Header>
 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -381,7 +424,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: "85%",
-    backgroundColor: "#bd20b1",
+    backgroundColor: "#e07ed9",
     borderRadius: 20,
     padding: 20,
     alignItems: "center",

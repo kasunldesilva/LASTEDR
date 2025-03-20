@@ -6,7 +6,17 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Appbar } from "react-native-paper";
+import { 
+  List, 
+  Divider, 
+  Avatar, 
+  Appbar, 
+  Dialog, 
+  Portal, 
+  Button, 
+  Menu 
+} from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import * as SecureStore from "expo-secure-store";
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 export default function ComplaintsList() {
@@ -15,6 +25,16 @@ export default function ComplaintsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
    const { t } = useTranslation();
+   const [menuVisible, setMenuVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
+     const [logoutVisible, setLogoutVisible] = useState(false);
+     
+   
+   
+    
+
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
    const theme = {
     ...DefaultTheme,
     colors: {
@@ -23,6 +43,14 @@ export default function ComplaintsList() {
       text: "black",
       placeholder: "gray",
     },
+  };
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("userToken"); 
+      router.replace("/(login)/Selecter"); 
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
    useEffect(() => {
@@ -85,14 +113,37 @@ export default function ComplaintsList() {
   return (
     <>
       <PaperProvider theme={theme}>
-          <Appbar.Header style={styles.appBar}>
-                      <Appbar.Content title="" />
-                      <View style={styles.titleContainer}>
-                        <Appbar.Content title="EC EDR" />
-                      </View>
-                      <Appbar.Action icon="account" onPress={() => {}} />
-                      <Appbar.Action icon="dots-vertical" onPress={() => {}} />
-          </Appbar.Header>
+      <Appbar.Header style={styles.appBar}>
+        <Appbar.Content title="" />
+        <View style={styles.titleContainer}>
+          <Appbar.Content title="EC EDR" />
+        </View>
+        <Appbar.Action icon="account" onPress={() => {}} />
+        
+            {/* Menu for About, Help, and Logout */}
+            <Menu
+              visible={menuVisible}
+              onDismiss={closeMenu}
+              anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
+            >
+              <Menu.Item 
+                onPress={() => router.push("/(cr)/details")}  
+                title={t("Help")} 
+                leadingIcon="help-circle"
+              />
+              <Menu.Item 
+                onPress={() => {}}  
+                title={t("About")} 
+                leadingIcon="information"
+              />
+              <Divider />
+              <Menu.Item 
+                onPress={handleLogout}
+                title={t("Logout")} 
+                leadingIcon="logout"
+              />
+            </Menu>
+      </Appbar.Header>
         
           <View style={styles.container}>
           <Text style={styles.title}>{t("Local Authorities Election")}- 2025</Text>

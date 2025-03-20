@@ -15,13 +15,16 @@ import {
 Platform
  
 } from "react-native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import * as ImagePicker from "expo-image-picker";
 import {
   Appbar,
   TextInput as PaperTextInput,
   Button,
+  Divider, 
+  Menu 
 } from "react-native-paper";
+
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import ModalSelector from "react-native-modal-selector";
@@ -46,13 +49,23 @@ const ComplaintScreen = () => {
   const [complaintID, setComplaintID] = useState(null);
   const [request, setRequest] = useState(null);
   const [file, setFile] = useState(null);
-
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("userToken"); 
+      router.replace("/(login)/Selecter"); 
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [formDatas, setFormDatas] = useState({ district: "" });
 
-  
+  const [menuVisible, setMenuVisible] = useState(false);
+
+const openMenu = () => setMenuVisible(true);
+const closeMenu = () => setMenuVisible(false);
   
   const theme = {
     ...DefaultTheme,
@@ -149,8 +162,8 @@ const ComplaintScreen = () => {
 
       setFormData((prev) => ({ ...prev, location: formattedLocation }));
     } catch (error) {
-      console.error("Error fetching location:", error);
-      Alert.alert("Error", "Failed to get location.");
+      // console.error("Error fetching location:", error);
+      // Alert.alert("Error", "Failed to get location.");
     }
   };
 
@@ -352,7 +365,29 @@ const ComplaintScreen = () => {
                 <Appbar.Content title="EC EDR" />
               </View>
               <Appbar.Action icon="account" onPress={() => {}} />
-              <Appbar.Action icon="dots-vertical" onPress={() => {}} />
+              <Menu
+                            visible={menuVisible}
+                            onDismiss={closeMenu}
+                            anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
+                          >
+                            <Menu.Item 
+                              onPress={() => router.push("/(cr)/details")}  
+                              title={t("Help")} 
+                              leadingIcon="help-circle"
+                            />
+                            <Menu.Item 
+                              onPress={() => {}}  
+                              title={t("About")} 
+                              leadingIcon="information"
+                            />
+                            <Divider />
+                            <Menu.Item 
+                              onPress={handleLogout}
+                              title={t("Logout")} 
+                              leadingIcon="logout"
+                            />
+                          </Menu>
+             
         </Appbar.Header>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {step === 1 ? (
@@ -547,10 +582,14 @@ const ComplaintScreen = () => {
                   style={styles.agreeButton}
                   onPress={() => {
                     setSuccess(false);
-                    setRequest({
+                    setFormData({
+                      location: "",
+                      village: "",
+                      district: "",
                       title: "",
                       description: "",
-                      incident_date: "",
+                      date: "",
+                      time: "",
                     });
                     setFile(null);
                     router.replace("/(user)/HomeScreen");

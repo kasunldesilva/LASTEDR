@@ -24,6 +24,8 @@ export default function FullDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { t, i18n } = useTranslation();
+  
+
     const router = useRouter();
     const [statusList, setStatusList] = useState([]);
     const [statusItems, setStatusItems] = useState([]);
@@ -58,23 +60,31 @@ export default function FullDetailScreen() {
       const district = sriLankaDistricts.find(d => d.value === districtNumber.toString());
       return district ? district.label : t("Unknown District");
     };
-    const formatDate = (date, time) => {
-      if (!date || !time) return ''; 
     
-     
-      const combinedDateTime = `${date} ${time}`;
-    
-     
-      if (i18n.language === 'en') {
-        return format(new Date(combinedDateTime), 'Pp'); 
-      } else if (i18n.language === 'si') {
-        return format(new Date(combinedDateTime), 'Pp'); 
-      } else {
-       
-        return format(new Date(combinedDateTime), 'Pp');
-      }
-    };
-    
+const formatDate = (date, time) => {
+  if (!date || !time) return t("");
+
+  try {
+    const combinedDateTime = `${date}T${time}`; // Ensuring ISO format
+
+    let dateFormat;
+    if (i18n.language === "en") {
+      dateFormat = "Pp"; // English format
+    } else if (i18n.language === "si") {
+      dateFormat = "Pp"; // Sinhala format (adjust if needed)
+    } else {
+      dateFormat = "Pp"; // Default format
+    }
+
+    return format(new Date(combinedDateTime), dateFormat);
+  } catch (error) {
+    console.error("Date formatting error:", error);
+    return t("Invalid Date");
+  }
+};
+
+
+
 
 
   const handleBack = () => {
@@ -251,7 +261,7 @@ export default function FullDetailScreen() {
               <Appbar.Content /> 
               <Appbar.Action icon="account" onPress={() => {}} />
               <Appbar.Action icon="dots-vertical" onPress={() => {}} />
-            </Appbar.Header>
+        </Appbar.Header>
 
       <ScrollView style={styles.container}>
         {loading && <ActivityIndicator size="large" color="#9C2A8E" />}
@@ -296,11 +306,12 @@ export default function FullDetailScreen() {
                 {complaint.description}
               </Text>
               <Text style={styles.complaintTitle}>
-                {t("Title of the Item")}
+                {t("District")}
               </Text>
               <Text style={styles.itemTitle1}>
-                {getDistrictName(complaint.district)}
+                {complaint?.district ? getDistrictName(complaint.district) : ""}
               </Text>
+
              
               <Text style={styles.complaintTitle}>
                 {t("Date and Time")}

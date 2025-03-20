@@ -10,13 +10,30 @@ import {
   StatusBar
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { Appbar } from "react-native-paper";
+import { 
+  List, 
+  Divider, 
+  Avatar, 
+  Appbar, 
+  Dialog, 
+  Portal, 
+  Button, 
+  Menu 
+} from "react-native-paper";
+import { useRouter,  useFocusEffect  } from "expo-router";
 import Complain from "../(cr)/Complain";
 import Request from "../(cr)/Request";
 import { LinearGradient } from "expo-linear-gradient"; 
+import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 const ElectionScreen = () => {
   const [activeScreen, setActiveScreen] = useState("Home");
+  const router = useRouter();
+
+const [menuVisible, setMenuVisible] = useState(false);
+
+const openMenu = () => setMenuVisible(true);
+const closeMenu = () => setMenuVisible(false);
   const { t } = useTranslation();
   const handleBack = () => {
     if (activeScreen !== "Home") {
@@ -35,7 +52,14 @@ const ElectionScreen = () => {
       placeholder: "gray",
     },
   };
-  
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("userToken"); 
+      router.replace("/(login)/Selecter"); 
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   useEffect(() => {
     const backAction = () => {
@@ -61,13 +85,36 @@ const ElectionScreen = () => {
     <>
      <PaperProvider theme={theme}>
       <Appbar.Header style={styles.appBar}>
-        <Appbar.Content title="" />
-        <View style={styles.titleContainer}>
-          <Appbar.Content title="EC EDR" />
-        </View>
-        <Appbar.Action icon="account" onPress={() => {}} />
-        <Appbar.Action icon="dots-vertical" onPress={() => {}} />
-      </Appbar.Header>
+              <Appbar.Content title="" />
+              <View style={styles.titleContainer}>
+                <Appbar.Content title="EC EDR" />
+              </View>
+              <Appbar.Action icon="account" onPress={() => {}} />
+              
+                  {/* Menu for About, Help, and Logout */}
+                  <Menu
+                    visible={menuVisible}
+                    onDismiss={closeMenu}
+                    anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
+                  >
+                    <Menu.Item 
+                      onPress={() => router.push("/(cr)/details")}  
+                      title={t("Help")} 
+                      leadingIcon="help-circle"
+                    />
+                    <Menu.Item 
+                      onPress={() => {}}  
+                      title={t("About")} 
+                      leadingIcon="information"
+                    />
+                    <Divider />
+                    <Menu.Item 
+                      onPress={handleLogout}
+                      title={t("Logout")} 
+                      leadingIcon="logout"
+                    />
+                  </Menu>
+            </Appbar.Header>
 
         <SafeAreaView style={styles.container}>
           <StatusBar barStyle="dark-content" backgroundColor="white" />
