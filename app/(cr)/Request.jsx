@@ -185,34 +185,7 @@ const [tempDate, setTempDate] = useState(new Date());
   return (
     <>
       <PaperProvider theme={theme}>
-        <Appbar.Header style={styles.appBar}>
-          <Appbar.BackAction onPress={handleBack} /> 
-          <Appbar.Content /> 
-          <Appbar.Action icon="account" onPress={() => {}} />
-          <Menu
-                            visible={menuVisible}
-                            onDismiss={closeMenu}
-                            anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
-                          >
-                            <Menu.Item 
-                              onPress={() => router.push("/details")}  
-                              title={t("Help")} 
-                              leadingIcon="help-circle"
-                            />
-                            <Menu.Item 
-                              onPress={() => {}}  
-                              title={t("About")} 
-                              leadingIcon="information"
-                            />
-                            <Divider />
-                            <Menu.Item 
-                              onPress={handleLogout}
-                              title={t("Logout")} 
-                              leadingIcon="logout"
-                            />
-                          </Menu>
-         
-        </Appbar.Header>
+        
 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 

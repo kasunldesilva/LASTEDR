@@ -7,11 +7,24 @@ import {
   Text,
   Dimensions
 } from "react-native";
+import { useRouter } from "expo-router";
+import { Appbar } from "react-native-paper";
 const { width, height } = Dimensions.get("window");
 export default function Index() {
+      const router = useRouter();
+    const handleBack = () => {
+        router.back(); 
+      };
    
     return (
       <SafeAreaView style={styles.safeArea}>
+        <Appbar.Header style={styles.appBar}>
+            <Appbar.BackAction onPress={handleBack} /> 
+            <Appbar.Content /> 
+            <Appbar.Action icon="account" onPress={() => {}} />
+            <Appbar.Action icon="dots-vertical" onPress={() => {}} />
+        </Appbar.Header>
+
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={[styles.container]}>
             <Image

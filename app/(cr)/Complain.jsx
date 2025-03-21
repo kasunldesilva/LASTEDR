@@ -71,6 +71,28 @@ const closeMenu = () => setMenuVisible(false);
     };
     fetchToken();
   }, []);
+  const [refreshing, setRefreshing] = useState(false);
+
+const handleRefresh = () => {
+  setRefreshing(true);
+  
+  // Reset form data and images
+  setFormData({
+    location: "",
+    village: "",
+    district: "",
+    title: "",
+    description: "",
+    date: "",
+    time: "",
+  });
+  setImages([]);
+  setSelectedDate(new Date());
+  setSelectedTime(new Date());
+
+  setTimeout(() => setRefreshing(false), 1000); // Simulate a short refresh time
+};
+
 
   const sriLankaDistricts = [
     { label: t("Colombo"), value: "1" },
@@ -324,36 +346,7 @@ const closeMenu = () => setMenuVisible(false);
   return (
     <View style={styles.container}>
        <PaperProvider theme={theme}>
-        <Appbar.Header style={styles.appBar}>
-              <Appbar.Content title="" />
-              <View style={styles.titleContainer}>
-                <Appbar.Content title="EC EDR" />
-              </View>
-              <Appbar.Action icon="account" onPress={() => {}} />
-                      <Menu
-                            visible={menuVisible}
-                            onDismiss={closeMenu}
-                            anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
-                          >
-                            <Menu.Item 
-                              onPress={() => router.push("/details")}  
-                              title={t("Help")} 
-                              leadingIcon="help-circle"
-                            />
-                            <Menu.Item 
-                              onPress={() => {}}  
-                              title={t("About")} 
-                              leadingIcon="information"
-                            />
-                            <Divider />
-                            <Menu.Item 
-                              onPress={handleLogout}
-                              title={t("Logout")} 
-                              leadingIcon="logout"
-                            />
-                          </Menu>
-             
-        </Appbar.Header>
+        
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {step === 1 ? (
             <View style={styles.uploadContain}>
@@ -535,21 +528,11 @@ const closeMenu = () => setMenuVisible(false);
               <TouchableOpacity
                     style={styles.agreeButton}
                     onPress={() => {
-                      setSuccess(false); 
-                      setFile(null); 
+                      setSuccess(false);
+                      setFile(null);
 
-                     
-                      setFormData({
-                        location: "",
-                        village: "",
-                        district: "",
-                        title: "",
-                        description: "",
-                        date: "",
-                        time: "",
-                      });
+                      handleRefresh(); // Call the refresh function to reset the form and images
 
-                      
                       setTimeout(() => {
                         router.replace("/(user)/HomeScreen");
                       }, 100);
@@ -600,7 +583,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cameraIcon: { width: 60, height: 60, tintColor: "#1a1717" },
-  uploadText: { color: "#a3158a", marginTop: 0, fontWeight: "bold" },
+  uploadText: { color: "#a3158a", marginTop: 0, fontWeight: "bold",paddingLeft:10 },
   imagePreview: { width: 80, height: 80, margin: 5, borderRadius: 10 },
   uploadBtn: {
     backgroundColor: "#a3158a",

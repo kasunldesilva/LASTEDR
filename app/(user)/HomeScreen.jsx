@@ -1,6 +1,6 @@
 import React, { useEffect, useState,useCallback  } from "react";
 import { useTranslation } from "react-i18next";
-import { View, Text, StyleSheet,RefreshControl, ScrollView, ActivityIndicator, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, StyleSheet,RefreshControl, ScrollView, ActivityIndicator, TouchableOpacity, FlatList ,BackHandler} from "react-native";
 import { useRouter,  useFocusEffect  } from "expo-router";
 import CustomPieChart from '../../components/CustomPieChart';
 import { Svg, Circle, Text as SvgText } from "react-native-svg";
@@ -11,6 +11,7 @@ import { Mail, Plus, Folder } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import Icon from "react-native-vector-icons/Ionicons";
+
 export default function Dashboard() {
     const router = useRouter();
     const [complaints, setComplaints] = useState([]);
@@ -25,6 +26,7 @@ export default function Dashboard() {
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
+
 
     const theme = {
       ...DefaultTheme,
@@ -113,6 +115,7 @@ export default function Dashboard() {
       setRefreshing(true);
       fetchDashboardData();
   };
+  
 //   useEffect(() => {
 //     fetchDashboardData();
 
