@@ -10,6 +10,8 @@ export default function CrLayout() {
       <Stack.Screen name="Request" options={{ headerShown: false }} />
       <Stack.Screen name="details" options={{ headerShown: false }} />
       <Stack.Screen name="fulldetail" options={{ headerShown: false }} />
+      <Stack.Screen name="about" options={{ headerShown: false }} />
+
 
       
       

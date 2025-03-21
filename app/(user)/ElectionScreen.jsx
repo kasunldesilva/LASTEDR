@@ -103,7 +103,7 @@ const closeMenu = () => setMenuVisible(false);
                       leadingIcon="help-circle"
                     />
                     <Menu.Item 
-                      onPress={() => {}}  
+                      onPress={() => router.push("/(cr)/about")}  
                       title={t("About")} 
                       leadingIcon="information"
                     />

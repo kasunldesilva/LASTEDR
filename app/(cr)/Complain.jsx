@@ -336,7 +336,7 @@ const closeMenu = () => setMenuVisible(false);
                             anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
                           >
                             <Menu.Item 
-                              onPress={() => router.push("/(cr)/details")}  
+                              onPress={() => router.push("/details")}  
                               title={t("Help")} 
                               leadingIcon="help-circle"
                             />

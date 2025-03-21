@@ -64,19 +64,19 @@ const SettingsScreen = () => {
         </View>
         <Appbar.Action icon="account" onPress={() => {}} />
         
-        {/* Menu for About, Help, and Logout */}
+      
         <Menu
           visible={menuVisible}
           onDismiss={closeMenu}
           anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
         >
           <Menu.Item 
-           
+            onPress={() => router.push("/(cr)/details")}
             title={t("Help")} 
             leadingIcon="help-circle"
           />
           <Menu.Item 
-            onPress={() => {}}  
+            onPress={() => router.push("/(cr)/about")}
             title={t("About")} 
             leadingIcon="information"
           />

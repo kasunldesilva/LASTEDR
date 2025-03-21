@@ -183,7 +183,7 @@ export default function Dashboard() {
                       anchor={<Appbar.Action icon="dots-vertical" onPress={openMenu} />}
                   >
                       <Menu.Item onPress={() => router.push("/(cr)/details")} title={t("Help")} leadingIcon="help-circle" />
-                      <Menu.Item onPress={() => {}} title={t("About")} leadingIcon="information" />
+                      <Menu.Item onPress={() => router.push("/(cr)/about")} title={t("About")} leadingIcon="information" />
                       <Divider />
                       <Menu.Item onPress={handleLogout} title={t("Logout")} leadingIcon="logout" />
                   </Menu>
